@@ -1,5 +1,9 @@
 # Angular Material开始
 
+## Develop 分支安装
+
+![develop分支安装](assets/develop分支安装.png)
+
 在 Angular 6.0 的时候，@angular/cli 新增内置了 `add` 命令。这个命令主要解决引用一些第三方的 UI 库或者工具库。整个过程都是自动化的，以下这些事情 ng add 都会帮你自动完成：
 
 - 自动修改：package.json
