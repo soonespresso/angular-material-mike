@@ -1,0 +1,28 @@
+:host {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+
+  mat-sidenav-container {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+  }
+
+  mat-sidenav {
+    padding: 10px;
+  }
+
+  mat-drawer-container {
+    height: 100px;
+    margin: 10px;
+    border: 1px solid royalblue;
+
+    mat-drawer {
+      background: antiquewhite;
+    }
+    mat-drawer-content {
+      background: tan;
+    }
+  }
+}

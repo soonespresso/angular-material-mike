@@ -1,0 +1,11 @@
+:host {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+
+  router-outlet {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+  }
+}
