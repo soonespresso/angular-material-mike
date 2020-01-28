@@ -1,0 +1,51 @@
+<mat-toolbar color="primary" class="app-header">
+  <button mat-icon-button (click)="sideNav.toggle()">
+    <mat-icon>{{ sideNav.opened ? 'close' : 'menu' }}</mat-icon>
+  </button>
+  <span>Angular Material Demo</span>
+
+  <span class="toolbar-seprator"></span>
+
+  <button mat-icon-button>
+    <mat-icon>message</mat-icon>
+  </button>
+  <button mat-icon-button>
+    <mat-icon>exit_to_app</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container class="app-container">
+  <mat-sidenav #sideNav class="app-sidenav" mode="push">
+    <div>我是左侧边栏菜单</div>
+    <div>
+      <button mat-raised-button color="warn" (click)="sideNav.toggle()">显示 / 隐藏</button>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+    <button mat-button (click)="sideNav.toggle()">切换状态</button>
+
+    <mat-drawer-container>
+      <mat-drawer mode="side" opened="true">Drawer Side</mat-drawer>
+      <mat-drawer-content>Drawer Content</mat-drawer-content>
+    </mat-drawer-container>
+
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <span>Row1 Toolbar</span>
+        <span class="toolbar-seprator"></span>
+        <mat-icon>favorite</mat-icon>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <span>Row2 Toolbar</span>
+        <span class="toolbar-seprator"></span>
+        <mat-icon>delete</mat-icon>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-toolbar>默认 Toolbar</mat-toolbar>
+    <mat-toolbar color="primary">primary Toolbar</mat-toolbar>
+    <mat-toolbar color="accent">accent Toolbar</mat-toolbar>
+    <mat-toolbar color="warn">warn Toolbar</mat-toolbar>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -2,3 +2,18 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.app-header {
+  position: fixed;
+  z-index: 2;
+}
+
+.app-container, .app-sidenav {
+  position: absolute;
+  padding-top: 64px;
+  height: calc(100vh - 64px);
+}
+
+.toolbar-seprator {
+  flex: 1 1 auto;
+}
