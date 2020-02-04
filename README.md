@@ -11,6 +11,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
   - SideNav：[dashboard-mat-sidenav](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-sidenav)
   - Toolbar：[dashboard-mat-toolbar](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-toolbar)
   - List：[dashboard-mat-list](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-list)
+  - Menu：[dashboard-mat-menu](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-menu)
 - 
 
 ## Development server
