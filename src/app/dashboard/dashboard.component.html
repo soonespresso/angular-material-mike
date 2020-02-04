@@ -6,14 +6,21 @@
 
   <span class="toolbar-seprator"></span>
 
-  <button mat-icon-button>
+  <button mat-icon-button [matMenuTriggerFor]="messageMenu" #menuTrigger="matMenuTrigger">
     <mat-icon>message</mat-icon>
   </button>
+  <mat-menu #messageMenu="matMenu">
+    <button mat-menu-item (click)="messageMenuClick('最新讯息')">最新讯息</button>
+    <button mat-menu-item (click)="messageMenuClick('讯息设定')">讯息设定</button>
+  </mat-menu>
+
   <button mat-icon-button>
     <mat-icon>exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
+
 <mat-sidenav-container class="app-container">
+
   <mat-sidenav #sideNav class="app-sidenav" mode="push">
     <div>我是左侧边栏菜单</div>
     <div>
@@ -33,64 +40,57 @@
         <mat-list-option [value]="2" #optAds>显示广告讯息</mat-list-option>
       </mat-selection-list>
     </mat-nav-list>
-
-
-    <!-- <mat-nav-list>
-      <h3 matSubheader>好友讯息</h3>
-      <mat-list-item>
-        <img matListAvatar src="/assets/icestream.jpg">
-        <p matLine>SoonEspresso</p>
-        <p matLine>Hi，好久不见，最近好吗？</p>
-        <button mat-icon-button><mat-icon>chat</mat-icon></button>
-      </mat-list-item>
-      <mat-list-item>
-        icon button 放在前面，也会被往后推
-        <button mat-icon-button><mat-icon>chat</mat-icon></button>
-        <img matListAvatar src="/assets/turing.jpg">
-        <p matLine>必然</p>
-        <p matLine>找时间吃个饭吧？</p>
-      </mat-list-item>
-    </mat-nav-list> -->
-
-    <!-- <mat-nav-list>
-      <h3 matSubheader>多行文字示例</h3>
-      <mat-list-item>
-        <p matLine>床前明月光</p>
-        <p matLine>疑是地上霜</p>
-      </mat-list-item>
-      <mat-list-item>
-        <p matLine>参加 IT 大赛</p>
-        <p matLine>功力增加一甲子</p>
-      </mat-list-item>
-    </mat-nav-list> -->
-
-    <!-- <mat-nav-list>
-      <h3 matSubheader>示例页面</h3>
-      <a [routerLink]="['/', 'dashboard', 'survey']" mat-list-item>问卷调查</a>
-      <a [routerLink]="['/', 'dashboard', 'blog']" mat-list-item>博客</a>
-      <a [routerLink]="['/', 'dashboard', 'inbox']" mat-list-item>收藏夹</a>
-
-      <mat-divider></mat-divider>
-
-      <h3 matSubheader>其他页面</h3>
-      <a [routerLink]="['/']" mat-list-item>首页</a>
-      <a [routerLink]="['/']" mat-list-item>Google</a>
-      <a [routerLink]="['/']" mat-list-item>Facebook</a>
-    </mat-nav-list> -->
-
-    <!-- <mat-nav-list>
-      <a [routerLink]="['/', 'dashboard', 'survey']" mat-list-item>问卷调查</a>
-      <a [routerLink]="['/', 'dashboard', 'blog']" mat-list-item>博客</a>
-      <a [routerLink]="['/', 'dashboard', 'inbox']" mat-list-item>收藏夹</a>
-    </mat-nav-list> -->
-
-    <!-- <mat-list>
-      <mat-list-item>问卷调查</mat-list-item>
-      <mat-list-item>博客</mat-list-item>
-      <mat-list-item>收藏夹</mat-list-item>
-    </mat-list> -->
   </mat-sidenav>
+
+
   <mat-sidenav-content>
+
+    <button mat-raised-button (click)="menuTrigger.toggleMenu()">开关讯息设定</button>
+
+    <div style="margin-left: 20px; margin-top: 20px;">
+      <button mat-raised-button [matMenuTriggerFor]="positionMenuNest">巢状选单</button>
+      <mat-menu #positionMenuNest="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="subMenu1">讯息1</button>
+        <button mat-menu-item [matMenuTriggerFor]="subMenu2">讯息2</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>讯息3</button>
+      </mat-menu>
+
+      <mat-menu #subMenu1="matMenu">
+        <button mat-menu-item><mat-icon>person</mat-icon>讯息 1-1</button>
+        <button mat-menu-item><mat-icon>favorite</mat-icon>讯息 1-2</button>
+        <button mat-menu-item><mat-icon>thumb_up</mat-icon>讯息 1-2</button>
+      </mat-menu>
+      <mat-menu #subMenu2="matMenu">
+        <button mat-menu-item><mat-icon>delete</mat-icon>讯息 2-1</button>
+        <button mat-menu-item disabled><mat-icon>settings</mat-icon>讯息 2-2</button>
+      </mat-menu>
+    </div>
+
+    <!--
+        export declare type MenuPositionX = 'before' | 'after';
+        export declare type MenuPositionY = 'above' | 'below';
+    -->
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button mat-raised-button [matMenuTriggerFor]="positionMenuBA">开关讯息设定 (xPosition: before, yPoison: above)</button>
+      <mat-menu #positionMenuBA="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="true">
+        <button mat-menu-item>讯息1</button>
+        <button mat-menu-item>讯息2</button>
+      </mat-menu>
+      &nbsp;
+      <button mat-raised-button [matMenuTriggerFor]="positionMenuAB">开关讯息设定 (xPosition: after, yPoison: below)</button>
+      <mat-menu #positionMenuAB="matMenu" xPosition="after" yPosition="below" [overlapTrigger]="true">
+        <button mat-menu-item>讯息1</button>
+        <button mat-menu-item>讯息2</button>
+      </mat-menu>
+      &nbsp;
+      <button mat-raised-button [matMenuTriggerFor]="positionMenu">开关讯息设定 [overlapTrigger=false]</button>
+      <mat-menu #positionMenu="matMenu" xPosition="after" yPosition="above" [overlapTrigger]="false">
+        <button mat-menu-item>讯息1</button>
+        <button mat-menu-item>讯息2</button>
+      </mat-menu>
+    </div>
 
     <button mat-button (click)="sideNav.toggle()">切换状态</button>
 
