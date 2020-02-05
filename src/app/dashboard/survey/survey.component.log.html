@@ -1,0 +1,76 @@
+<p>survey works!</p>
+
+
+<!-- 一个 step 包含一个 form -->
+<button mat-button (click)="isLinear = !isLinear">切换 Linear 状态 {{ isLinear }}</button>
+<mat-vertical-stepper [linear]="isLinear">
+  <mat-step [stepControl]="basicFormGroup">
+    <form [formGroup]="basicFormGroup">
+      <ng-template matStepLabel><u>个人资讯</u></ng-template><h4>提供个人资讯</h4>
+      <mat-form-field>
+        <input type="text" name="name" matInput placeholder="姓名" formControlName="name" required>
+      </mat-form-field>
+    </form>
+    <button mat-button matStepperNext>前进到「详细问题」</button>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
+    <button mat-button matStepperPrevious>后退到「个人资讯」</button>
+    <button mat-button matStepperNext>前进到「其他」</button>
+  </mat-step>
+  <mat-step label="其他">
+    <h4>其他问题</h4>
+    <button mat-button matStepperPrevious>回到「详细问题」</button>
+  </mat-step>
+</mat-vertical-stepper>
+
+
+<!-- 「上一步」和「下一步」 -->
+<mat-vertical-stepper>
+  <mat-step>
+    <ng-template matStepLabel><u>个人资讯</u></ng-template><h4>提供个人资讯</h4>
+    <button mat-button matStepperNext>前进到「详细问题」</button>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
+    <button mat-button matStepperPrevious>后退到「个人资讯」</button>
+    <button mat-button matStepperNext>前进到「其他」</button>
+  </mat-step>
+  <mat-step label="其他">
+    <h4>其他问题</h4>
+    <button mat-button matStepperPrevious>回到「详细问题」</button>
+  </mat-step>
+</mat-vertical-stepper>
+
+
+<!-- 复杂的 label -->
+<mat-vertical-stepper>
+  <mat-step>
+    <!-- label -->
+    <ng-template matStepLabel><u>个人资讯</u></ng-template>
+    <h4>提供个人资讯</h4>
+  </mat-step>
+  <mat-step>
+    <!-- label -->
+    <ng-template matStepLabel><em>详细问题</em></ng-template>
+    <h4>主要的问题内容</h4>
+  </mat-step>
+  <mat-step label="其他">
+    <h4>其他问题</h4>
+  </mat-step>
+</mat-vertical-stepper>
+
+
+<!-- 垂直 -->
+<mat-vertical-stepper>
+  <mat-step label="个人咨询"><h4>提供个人咨询</h4></mat-step>
+  <mat-step label="详细问题"><h4>主要问题内容</h4></mat-step>
+  <mat-step label="其他"><h4>其他问题</h4></mat-step>
+</mat-vertical-stepper>
+
+<!-- 水平 -->
+<mat-horizontal-stepper>
+  <mat-step label="个人咨询"><h4>提供个人咨询</h4></mat-step>
+  <mat-step label="详细问题"><h4>主要问题内容</h4></mat-step>
+  <mat-step label="其他"><h4>其他问题</h4></mat-step>
+</mat-horizontal-stepper>

@@ -14,6 +14,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: calc(100vh - 64px);
 }
 
-.toolbar-seprator {
+.toolbar-title {
   flex: 1 1 auto;
+  text-align: center;
 }
