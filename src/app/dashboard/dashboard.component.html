@@ -1,9 +1,11 @@
+<!-- Toolbar -->
 <mat-toolbar color="primary" class="app-header">
   <button mat-icon-button (click)="sideNav.toggle()">
     <mat-icon>{{ sideNav.opened ? 'close' : 'menu' }}</mat-icon>
   </button>
   <span>Angular Material Demo</span>
 
+  <!-- 在这之后的都会被推到右边去 -->
   <span class="toolbar-seprator"></span>
 
   <button mat-icon-button [matMenuTriggerFor]="messageMenu" #menuTrigger="matMenuTrigger">
@@ -19,15 +21,17 @@
   </button>
 </mat-toolbar>
 
+<!-- Sidenav -->
 <mat-sidenav-container class="app-container">
 
-  <mat-sidenav #sideNav class="app-sidenav" mode="push">
-    <div>我是左侧边栏菜单</div>
-    <div>
-      <button mat-raised-button color="warn" (click)="sideNav.toggle()">显示 / 隐藏</button>
-    </div>
-
+  <!-- Nav 左边栏 -->
+  <mat-sidenav #sideNav class="app-sidenav" mode="push"><!-- (click)="sideNav.toggle()" -->
+    <!-- Nav List -->
     <mat-nav-list>
+      <h3 matSubheader>示例页面</h3>
+      <!-- <a mat-list-item [routerLink]="['/', 'dashboard', 'survey']"></a> -->
+      <a mat-list-item routerLink="/dashboard/survey">问卷调查</a>
+
       <h3 matSubheader><mat-icon>chat_bubble</mat-icon>新讯息</h3>
       <mat-list-item *ngIf="optNew.selected">这是新消息</mat-list-item>
       <mat-list-item *ngIf="optAds.selected">这是广告消息</mat-list-item>
@@ -43,79 +47,8 @@
   </mat-sidenav>
 
 
+  <!-- Content -->
   <mat-sidenav-content>
-
-    <button mat-raised-button (click)="menuTrigger.toggleMenu()">开关讯息设定</button>
-
-    <div style="margin-left: 20px; margin-top: 20px;">
-      <button mat-raised-button [matMenuTriggerFor]="positionMenuNest">巢状选单</button>
-      <mat-menu #positionMenuNest="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="subMenu1">讯息1</button>
-        <button mat-menu-item [matMenuTriggerFor]="subMenu2">讯息2</button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item>讯息3</button>
-      </mat-menu>
-
-      <mat-menu #subMenu1="matMenu">
-        <button mat-menu-item><mat-icon>person</mat-icon>讯息 1-1</button>
-        <button mat-menu-item><mat-icon>favorite</mat-icon>讯息 1-2</button>
-        <button mat-menu-item><mat-icon>thumb_up</mat-icon>讯息 1-2</button>
-      </mat-menu>
-      <mat-menu #subMenu2="matMenu">
-        <button mat-menu-item><mat-icon>delete</mat-icon>讯息 2-1</button>
-        <button mat-menu-item disabled><mat-icon>settings</mat-icon>讯息 2-2</button>
-      </mat-menu>
-    </div>
-
-    <!--
-        export declare type MenuPositionX = 'before' | 'after';
-        export declare type MenuPositionY = 'above' | 'below';
-    -->
-
-    <div style="text-align: center; margin-top: 20px;">
-      <button mat-raised-button [matMenuTriggerFor]="positionMenuBA">开关讯息设定 (xPosition: before, yPoison: above)</button>
-      <mat-menu #positionMenuBA="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="true">
-        <button mat-menu-item>讯息1</button>
-        <button mat-menu-item>讯息2</button>
-      </mat-menu>
-      &nbsp;
-      <button mat-raised-button [matMenuTriggerFor]="positionMenuAB">开关讯息设定 (xPosition: after, yPoison: below)</button>
-      <mat-menu #positionMenuAB="matMenu" xPosition="after" yPosition="below" [overlapTrigger]="true">
-        <button mat-menu-item>讯息1</button>
-        <button mat-menu-item>讯息2</button>
-      </mat-menu>
-      &nbsp;
-      <button mat-raised-button [matMenuTriggerFor]="positionMenu">开关讯息设定 [overlapTrigger=false]</button>
-      <mat-menu #positionMenu="matMenu" xPosition="after" yPosition="above" [overlapTrigger]="false">
-        <button mat-menu-item>讯息1</button>
-        <button mat-menu-item>讯息2</button>
-      </mat-menu>
-    </div>
-
-    <button mat-button (click)="sideNav.toggle()">切换状态</button>
-
-    <mat-drawer-container>
-      <mat-drawer mode="side" opened="true">Drawer Side</mat-drawer>
-      <mat-drawer-content>Drawer Content</mat-drawer-content>
-    </mat-drawer-container>
-
-    <mat-toolbar color="primary">
-      <mat-toolbar-row>
-        <span>Row1 Toolbar</span>
-        <span class="toolbar-seprator"></span>
-        <mat-icon>favorite</mat-icon>
-      </mat-toolbar-row>
-
-      <mat-toolbar-row>
-        <span>Row2 Toolbar</span>
-        <span class="toolbar-seprator"></span>
-        <mat-icon>delete</mat-icon>
-      </mat-toolbar-row>
-    </mat-toolbar>
-
-    <mat-toolbar>默认 Toolbar</mat-toolbar>
-    <mat-toolbar color="primary">primary Toolbar</mat-toolbar>
-    <mat-toolbar color="accent">accent Toolbar</mat-toolbar>
-    <mat-toolbar color="warn">warn Toolbar</mat-toolbar>
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
