@@ -10,7 +10,7 @@
 - **SideNav**：放置使用者资讯，或主要功能选项等，可以常显在左右两侧，也可以隐藏起来需要的时候再动态打开。
 - **Content**：主要功能显示界面
 
- ![Material Design Layout](assets/Material Design Layout.png)
+ ![Material Design Layout](assets/Material-Design-Layout.png)
 
 ## 使用 Angular Material 的 SideNav
 
