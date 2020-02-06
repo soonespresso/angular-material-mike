@@ -199,3 +199,72 @@ export class SharedMaterialModule { }
 > 更多 `<mat-selection-list>` 和 `<mat-list-option>` 的 API 可以参考：
 > https://material.angular.io/components/list/api#MatListOption
 
+#### Expression has changed after it was checked
+
+```html
+<mat-selection-list>
+	<mat-list-option [value]="1" selected="true" #optNew>有新讯息时通知我</mat-list-option>
+</mat-selection-list>
+```
+
+此时修改了 optNew 的 `selected` 属性时
+
+```html
+<mat-list-item *ngIf="optNew.selected">这是新消息</mat-list-item>
+```
+
+会报错：
+
+![ExpressionChangedAfterItHasBeenCheckedError](assets/ExpressionChangedAfterItHasBeenCheckedError.png)
+
+修改方式：
+
+1. 将当前模式改为生产模式，在 npm 运行：`ng serve --open --prod` 或者修改：
+
+   *src\environments\environment.ts*
+
+   ```typescript
+   export const environment = {
+     production: true
+   };
+   ```
+
+2. *src\app\dashboard\dashboard.component.html*
+
+   ```html
+   <mat-selection-list>
+       <mat-list-option [value]="1" #optNew>有新讯息时通知我</mat-list-option>
+   </mat-selection-list>
+   ```
+
+   *src\app\dashboard\dashboard.component.ts*
+
+   ```typescript
+   import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+   import { MatListOption } from '@angular/material';
+   
+   @Component({
+     selector: 'app-dashboard',
+     templateUrl: './dashboard.component.html',
+     styleUrls: ['./dashboard.component.scss']
+   })
+   export class DashboardComponent implements OnInit, AfterViewInit {
+   
+     @ViewChild('optNew', { static: false })
+     optNew: MatListOption;
+   
+     constructor() { }
+   
+     ngOnInit() {
+     }
+   
+     ngAfterViewInit(): void {
+       setTimeout(() => {
+         this.optNew._setSelected(true);
+       });
+     }
+   }
+   
+   ```
+
+   

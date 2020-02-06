@@ -1,4 +1,6 @@
+<!-- Toolbar -->
 <mat-toolbar color="primary" class="app-header">
+
   <button mat-icon-button (click)="sideNav.toggle()">
     <mat-icon>{{ sideNav.opened ? 'close' : 'menu' }}</mat-icon>
   </button>
@@ -13,13 +15,18 @@
     <mat-icon>exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
+
+<!-- Sidenav -->
 <mat-sidenav-container class="app-container">
+
+  <!-- Nav -->
   <mat-sidenav #sideNav class="app-sidenav" mode="push">
     <div>我是左侧边栏菜单</div>
     <div>
       <button mat-raised-button color="warn" (click)="sideNav.toggle()">显示 / 隐藏</button>
     </div>
 
+    <!-- Nav list -->
     <mat-nav-list>
       <h3 matSubheader><mat-icon>chat_bubble</mat-icon>新讯息</h3>
       <mat-list-item *ngIf="optNew.selected">这是新消息</mat-list-item>
@@ -29,76 +36,25 @@
 
       <h3 matSubheader><mat-icon>settings</mat-icon>讯息设定</h3>
       <mat-selection-list>
-        <mat-list-option [value]="1" selected="true" #optNew>有新讯息时通知我</mat-list-option>
+        <mat-list-option [value]="1" #optNew>有新讯息时通知我</mat-list-option>
         <mat-list-option [value]="2" #optAds>显示广告讯息</mat-list-option>
       </mat-selection-list>
     </mat-nav-list>
 
-
-    <!-- <mat-nav-list>
-      <h3 matSubheader>好友讯息</h3>
-      <mat-list-item>
-        <img matListAvatar src="/assets/icestream.jpg">
-        <p matLine>SoonEspresso</p>
-        <p matLine>Hi，好久不见，最近好吗？</p>
-        <button mat-icon-button><mat-icon>chat</mat-icon></button>
-      </mat-list-item>
-      <mat-list-item>
-        icon button 放在前面，也会被往后推
-        <button mat-icon-button><mat-icon>chat</mat-icon></button>
-        <img matListAvatar src="/assets/turing.jpg">
-        <p matLine>必然</p>
-        <p matLine>找时间吃个饭吧？</p>
-      </mat-list-item>
-    </mat-nav-list> -->
-
-    <!-- <mat-nav-list>
-      <h3 matSubheader>多行文字示例</h3>
-      <mat-list-item>
-        <p matLine>床前明月光</p>
-        <p matLine>疑是地上霜</p>
-      </mat-list-item>
-      <mat-list-item>
-        <p matLine>参加 IT 大赛</p>
-        <p matLine>功力增加一甲子</p>
-      </mat-list-item>
-    </mat-nav-list> -->
-
-    <!-- <mat-nav-list>
-      <h3 matSubheader>示例页面</h3>
-      <a [routerLink]="['/', 'dashboard', 'survey']" mat-list-item>问卷调查</a>
-      <a [routerLink]="['/', 'dashboard', 'blog']" mat-list-item>博客</a>
-      <a [routerLink]="['/', 'dashboard', 'inbox']" mat-list-item>收藏夹</a>
-
-      <mat-divider></mat-divider>
-
-      <h3 matSubheader>其他页面</h3>
-      <a [routerLink]="['/']" mat-list-item>首页</a>
-      <a [routerLink]="['/']" mat-list-item>Google</a>
-      <a [routerLink]="['/']" mat-list-item>Facebook</a>
-    </mat-nav-list> -->
-
-    <!-- <mat-nav-list>
-      <a [routerLink]="['/', 'dashboard', 'survey']" mat-list-item>问卷调查</a>
-      <a [routerLink]="['/', 'dashboard', 'blog']" mat-list-item>博客</a>
-      <a [routerLink]="['/', 'dashboard', 'inbox']" mat-list-item>收藏夹</a>
-    </mat-nav-list> -->
-
-    <!-- <mat-list>
-      <mat-list-item>问卷调查</mat-list-item>
-      <mat-list-item>博客</mat-list-item>
-      <mat-list-item>收藏夹</mat-list-item>
-    </mat-list> -->
   </mat-sidenav>
+
+  <!-- Content -->
   <mat-sidenav-content>
 
     <button mat-button (click)="sideNav.toggle()">切换状态</button>
 
+    <!-- Drawer -->
     <mat-drawer-container>
       <mat-drawer mode="side" opened="true">Drawer Side</mat-drawer>
       <mat-drawer-content>Drawer Content</mat-drawer-content>
     </mat-drawer-container>
 
+    <!-- 多行 Toolbar -->
     <mat-toolbar color="primary">
       <mat-toolbar-row>
         <span>Row1 Toolbar</span>
@@ -113,6 +69,7 @@
       </mat-toolbar-row>
     </mat-toolbar>
 
+    <!-- Toolbar -->
     <mat-toolbar>默认 Toolbar</mat-toolbar>
     <mat-toolbar color="primary">primary Toolbar</mat-toolbar>
     <mat-toolbar color="accent">accent Toolbar</mat-toolbar>
