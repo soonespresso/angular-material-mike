@@ -1,9 +1,11 @@
+<!-- Toolbar -->
 <mat-toolbar color="primary" class="app-header">
   <button mat-icon-button (click)="sideNav.toggle()">
     <mat-icon>{{ sideNav.opened ? 'close' : 'menu' }}</mat-icon>
   </button>
   <span>Angular Material Demo</span>
 
+  <!-- 填满剩余空间，在这之后的内容被推到右边去 -->
   <span class="toolbar-seprator"></span>
 
   <button mat-icon-button>
@@ -13,22 +15,30 @@
     <mat-icon>exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
+
+<!-- Sidenav -->
 <mat-sidenav-container class="app-container">
+
+  <!-- Nav -->
   <mat-sidenav #sideNav class="app-sidenav" mode="push">
     <div>我是左侧边栏菜单</div>
     <div>
       <button mat-raised-button color="warn" (click)="sideNav.toggle()">显示 / 隐藏</button>
     </div>
   </mat-sidenav>
+
+  <!-- Content -->
   <mat-sidenav-content>
 
     <button mat-button (click)="sideNav.toggle()">切换状态</button>
 
+    <!-- Drawer -->
     <mat-drawer-container>
       <mat-drawer mode="side" opened="true">Drawer Side</mat-drawer>
       <mat-drawer-content>Drawer Content</mat-drawer-content>
     </mat-drawer-container>
 
+    <!-- 多行 Toolbar -->
     <mat-toolbar color="primary">
       <mat-toolbar-row>
         <span>Row1 Toolbar</span>
@@ -43,6 +53,7 @@
       </mat-toolbar-row>
     </mat-toolbar>
 
+    <!-- Toolbar -->
     <mat-toolbar>默认 Toolbar</mat-toolbar>
     <mat-toolbar color="primary">primary Toolbar</mat-toolbar>
     <mat-toolbar color="accent">accent Toolbar</mat-toolbar>
