@@ -1,5 +1,10 @@
+<!-- Toolbar -->
 <mat-toolbar>我是 Toolbar</mat-toolbar>
+
+<!-- Sidenav -->
 <mat-sidenav-container>
+
+  <!-- Nav 左边栏 -->
   <mat-sidenav #sideNav mode="over" fixedInViewport="true" fixedTopGap="20" fixedBottomGap="20"
               disableClose (opened)="opened()" (closed)="closed()">
     <div>我是左侧边栏菜单</div>
@@ -7,12 +12,17 @@
       <button mat-raised-button color="warn" (click)="toggleSideNav(sideNav)">切换侧边栏状态</button>
     </div>
   </mat-sidenav>
+
+  <!-- Nav 右边栏 -->
   <mat-sidenav #sideNavEnd opened="true" mode="side" position="end">
     <div>我是右侧边栏菜单</div>
   </mat-sidenav>
+
+  <!-- Content -->
   <mat-sidenav-content>
     <button mat-button (click)="toggleSideNav(sideNav)">切换侧边栏状态</button>
 
+    <!-- Drawer -->
     <mat-drawer-container>
       <mat-drawer mode="side" opened="true">Drawer Side</mat-drawer>
       <mat-drawer-content>Content</mat-drawer-content>
