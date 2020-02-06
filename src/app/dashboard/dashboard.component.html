@@ -1,3 +1,4 @@
+<!-- Toolbar -->
 <mat-toolbar color="primary" class="app-header">
   <button mat-icon-button (click)="sideNav.toggle()">
     <mat-icon>{{ sideNav.opened ? 'close' : 'menu' }}</mat-icon>
@@ -6,6 +7,7 @@
 
   <span class="toolbar-seprator"></span>
 
+  <!-- 使用 mat-menu -->
   <button mat-icon-button [matMenuTriggerFor]="messageMenu" #menuTrigger="matMenuTrigger">
     <mat-icon>message</mat-icon>
   </button>
@@ -19,8 +21,10 @@
   </button>
 </mat-toolbar>
 
+<!-- Sidenav -->
 <mat-sidenav-container class="app-container">
 
+  <!-- Nav -->
   <mat-sidenav #sideNav class="app-sidenav" mode="push">
     <div>我是左侧边栏菜单</div>
     <div>
@@ -36,17 +40,19 @@
 
       <h3 matSubheader><mat-icon>settings</mat-icon>讯息设定</h3>
       <mat-selection-list>
-        <mat-list-option [value]="1" selected="true" #optNew>有新讯息时通知我</mat-list-option>
+        <mat-list-option [value]="1" #optNew>有新讯息时通知我</mat-list-option>
         <mat-list-option [value]="2" #optAds>显示广告讯息</mat-list-option>
       </mat-selection-list>
     </mat-nav-list>
   </mat-sidenav>
 
-
+  <!-- Content -->
   <mat-sidenav-content>
 
+    <!-- 开启 mat-menu -->
     <button mat-raised-button (click)="menuTrigger.toggleMenu()">开关讯息设定</button>
 
+    <!-- 巢状 Menu -->
     <div style="margin-left: 20px; margin-top: 20px;">
       <button mat-raised-button [matMenuTriggerFor]="positionMenuNest">巢状选单</button>
       <mat-menu #positionMenuNest="matMenu">
@@ -72,6 +78,7 @@
         export declare type MenuPositionY = 'above' | 'below';
     -->
 
+    <!-- 使用 xPosition 和 yPoison 调整选单出现位置 -->
     <div style="text-align: center; margin-top: 20px;">
       <button mat-raised-button [matMenuTriggerFor]="positionMenuBA">开关讯息设定 (xPosition: before, yPoison: above)</button>
       <mat-menu #positionMenuBA="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="true">
@@ -94,11 +101,13 @@
 
     <button mat-button (click)="sideNav.toggle()">切换状态</button>
 
+    <!-- Drawer -->
     <mat-drawer-container>
       <mat-drawer mode="side" opened="true">Drawer Side</mat-drawer>
       <mat-drawer-content>Drawer Content</mat-drawer-content>
     </mat-drawer-container>
 
+    <!-- 多行 Toolbar -->
     <mat-toolbar color="primary">
       <mat-toolbar-row>
         <span>Row1 Toolbar</span>
@@ -113,6 +122,7 @@
       </mat-toolbar-row>
     </mat-toolbar>
 
+    <!-- Toolbar -->
     <mat-toolbar>默认 Toolbar</mat-toolbar>
     <mat-toolbar color="primary">primary Toolbar</mat-toolbar>
     <mat-toolbar color="accent">accent Toolbar</mat-toolbar>
