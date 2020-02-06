@@ -8,10 +8,10 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 - MatIcon：[mat-icon](https://github.com/soonespresso/angular-material-mike/tree/mat-icon)
 - MatButton、MatButtonToggle、MatRipple：[mat-button-etc](https://github.com/soonespresso/angular-material-mike/tree/mat-button-etc)
 - 打造基本后台
-  - SideNav：[dashboard-mat-sidenav](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-sidenav)
-  - Toolbar：[dashboard-mat-toolbar](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-toolbar)
-  - List：[dashboard-mat-list](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-list)
-  - Menu：[dashboard-mat-menu](https://github.com/soonespresso/angular-material-mike/tree/dashboard-mat-menu)
+  - SideNav：[dashboard-sidenav](https://github.com/soonespresso/angular-material-mike/tree/dashboard-sidenav)
+  - Toolbar：[dashboard-toolbar](https://github.com/soonespresso/angular-material-mike/tree/dashboard-toolbar)
+  - List：[dashboard-list](https://github.com/soonespresso/angular-material-mike/tree/dashboard-list)
+  - Menu：[dashboard-menu](https://github.com/soonespresso/angular-material-mike/tree/dashboard-menu)
 - 问卷调查
   - Stepper：[survey-stepper](https://github.com/soonespresso/angular-material-mike/tree/survey-stepper)
 - 
