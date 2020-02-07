@@ -1,4 +1,4 @@
-<p>survey works!</p>
+<p class="autocomplete-highlight">survey works!</p>
 
 <button mat-button (click)="isLinear = !isLinear">切换 Linear 状态 {{ isLinear }}</button>
 
@@ -10,6 +10,73 @@
       <mat-form-field>
         <input type="text" name="name" matInput placeholder="姓名" formControlName="name" required>
       </mat-form-field>
+
+      <!-- matInput -->
+      <div>
+        <mat-form-field>
+          <input type="text" name="nickname" matInput placeholder="昵称">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <!-- ErrorStateMatcher -->
+          <!-- <textarea name="intro_self" matInput placeholder="自我介绍" formControlName="intro" required
+                    [errorStateMatcher]="earlyErrorStateMatcher"></textarea> -->
+          <textarea name="intro_self" matInput placeholder="自我介绍" formControlName="intro" required
+                    matTextareaAutosize></textarea>
+          <!-- matHint -->
+          <mat-hint>简单介绍一下你的兴趣吧！</mat-hint>
+          <!-- matError -->
+          <!-- <mat-error>请记得输入自我介绍！</mat-error> -->
+          <mat-error *ngIf="surveyForm.get('basicQuestions').get('intro').hasError('required')">
+            请记得输入自我介绍！
+          </mat-error>
+          <mat-error *ngIf="surveyForm.get('basicQuestions').get('intro').hasError('minlength')">
+            至少输入 10 个字吧！
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <input type="date" name="birthday" matInput placeholder="生日">
+        </mat-form-field>
+      </div>
+
+      <!-- 使用 mat-autocomplete -->
+      <div>
+        <mat-form-field>
+          <input type="text" name="country" matInput placeholder="国家" formControlName="country" [matAutocomplete]="countries">
+        </mat-form-field>
+        <mat-autocomplete #countries="matAutocomplete" [displayWith]="displayCountry">
+          <mat-option *ngFor="let country of countries$ | async" [value]="country">
+            <span [innerHTML]="highlightFiltered(country.name)"></span>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-autocomplete #countries1="matAutocomplete">
+          <mat-option *ngFor="let country of countries$ | async" [value]="country.name">
+            <!-- {{ country.name }} -->
+            <span [innerHTML]="highlightFiltered(country.name)"></span>
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+
+      <!-- 使用 mat-optgroup 显示分组数据 -->
+      <div>
+        <mat-form-field>
+          <input type="text" name="majorTech" matInput placeholder="代表技术" formControlName="majorTech"
+                [matAutocomplete]="majorTeches">
+        </mat-form-field>
+        <mat-autocomplete #majorTeches="matAutocomplete">
+          <mat-optgroup *ngFor="let majorTech of majorTechList" [label]="majorTech.name">
+            <mat-option *ngFor="let item of majorTech.items" [value]="item">
+              {{ item }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-autocomplete>
+      </div>
+
+
       <div>
         <button mat-button matStepperNext>前进到「详细问题」</button>
       </div>

@@ -18,3 +18,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex: 1 1 auto;
   text-align: center;
 }
+
+.autocomplete-highlight {
+  font-weight: bold;
+  background: orange;
+}

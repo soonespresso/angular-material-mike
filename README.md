@@ -1,261 +1,119 @@
 
 
-# 问卷页面 - Stepper
+# 问卷页面 - Input、Autocomplete
 
-今天我们要使用 Angular Material 来制作一个问卷调查的页面，这个练习主要学习 Angular Material 的表单组件，在前端的世界里各式各样的表单是必须面临的一大议题！不过在介绍表单组件之前，我们先来介绍一个还蛮适合放在问卷页面的组件 —— Stepper。
+下面我们来介绍 Material Design 中属于 Input，也就是文字输入框相关的功能，让我们来看看 Angular Material 的 Input、Autocomplete！
 
-## 关于 Material Design 中的 Stepper
+## Material Design 中的文字输入框
 
-在 [Material Design 的 Stepper 设计指南](https://material.io/design)中，Stepper 可以说是**操作群组化**的结果，我们可以将这些操作分成不同的群组，并且依照顺序变成几个进度，使用者可以依循这些进度完成所有步骤。
+在 [Material Design的文字框设计指南](https://material.io/guidelines/components/text-fields.html)中，文字框就是提供使用者输入文字的一个空间，通常在表单中最常被使用。文字框可是单行或者多行，如果需要的话要提供能随着行数增加而增加的功能。另外，文字框也要能限制输入的格式，或提供选项来选择。
 
-在许多组件的设计上，这也称作**精灵（Wizard）**，不管怎么称呼，这类组件的目标很加单，就是**引导使用者完成所有步骤，并得到完成步骤后的结果**。因此像是注册页面、问卷调查等等，都很适合使用这样的组件来设计，避免因为太多过程而混淆。
+## 开始使用 Angular Material 的 Input
 
-Stepper 也有许多不同的呈现模式，我们可以依照需要的不同来决定选择使用什么样的模式，例如：是否允许回去编辑上一步骤，或是否一定要依循页面的步骤去操作等等，都是设计上需要仔细考量的点。
-
-## 开始使用 Angular Material 的 Stepper 组件
-
-首先加入 `MatStepperModule`。
-
-```typescript
-@NgModule({
-  imports: [
-    MatStepperModule, ...
-  ],
-  exports: [
-    MatStepperModule, ...
-  ]
-})
-export class SharedMaterialModule { }
-```
-
-### 使用 mat-stepper
-
-Stepper 基本上是一个水平或垂直的 Component 与一系列的 step 的组合，下面是一个水平的 Stepper：
-
-*src\app\dashboard\survey\survey.component.html*
-
-```html
-<mat-horizontal-stepper>
-  <mat-step label="个人咨询"><h4>提供个人咨询</h4></mat-step>
-  <mat-step label="详细问题"><h4>主要问题内容</h4></mat-step>
-  <mat-step label="其他"><h4>其他问题</h4></mat-step>
-</mat-horizontal-stepper>
-
-```
-
- ![mat-horizontal-stepper](assets/mat-horizontal-stepper.png)
-
-上述程序中，我们使用 `<mat-horizontal-stepper>` 作为一个水平 stepper 的容器，接着每一步骤都可以一个 `<mat-step>` 包装起来，对于每个步骤的基本标题文字则使用 `<mat-step>` 的 `label` 属性。
-
-> 这个组件一样可以通过方向键、Tab 和 Enter 键来互动的。
-
-### 改变 Stepper 排列方向
-
-如果希望改为垂直排列，只需要将最外面的 `<mat-horizontal-stepper>` 改为 `<mat-vertical-stepper>` 即可，效果如下：
-
-*src\app\dashboard\survey\survey.component.html*
-
-```html
-<mat-vertical-stepper>
-  <mat-step label="个人咨询"><h4>提供个人咨询</h4></mat-step>
-  <mat-step label="详细问题"><h4>主要问题内容</h4></mat-step>
-  <mat-step label="其他"><h4>其他问题</h4></mat-step>
-</mat-vertical-stepper>
-```
-
- ![mat-vertical-stepper](assets/mat-vertical-stepper.png)
-
-### 设定复杂的 label
-
-如果显示的 label 想要以比较复杂的方式呈现，可以在 `<mat-step>` 里加一个带有 `matStepLabel` directive 的 `<ng-template>` 元素。
-
-*src\app\dashboard\survey\survey.component.html*
-
-```html
-<mat-vertical-stepper>
-  <mat-step>
-    <!-- label -->
-    <ng-template matStepLabel><u>个人咨询</u></ng-template>
-    <h4>提供个人咨询</h4>
-  </mat-step>
-  <mat-step>
-    <!-- label -->
-    <ng-template matStepLabel><em>详细问题</em></ng-template>
-    <h4>主要的问题内容</h4>
-  </mat-step>
-  <mat-step label="其他">
-    <h4>其他问题</h4>
-  </mat-step>
-</mat-vertical-stepper>
-
-```
-
- ![matStepLabel](assets/matStepLabel.png)
-
-### 加上「上一步」和「下一步」按钮
-
-我们可以在 `<mat-step>` 中使用按钮并通过 `matSepperNext` 和 `matStepperPrevious` 来动态切换不同的步骤：
-
-*src\app\dashboard\survey\survey.component.html*
-
-```html
-<!-- 「上一步」和「下一步」 -->
-<mat-vertical-stepper>
-  <mat-step>
-    <ng-template matStepLabel><u>个人资讯</u></ng-template><h4>提供个人资讯</h4>
-    <button mat-button matStepperNext>前进到「详细问题」</button>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
-    <button mat-button matStepperPrevious>后退到「个人资讯」</button>
-    <button mat-button matStepperNext>前进到「其他」</button>
-  </mat-step>
-  <mat-step label="其他">
-    <h4>其他问题</h4>
-    <button mat-button matStepperPrevious>回到「详细问题」</button>
-  </mat-step>
-</mat-vertical-stepper>
-
-```
-
- ![matStepperPrevious-matStepperNext](assets/matStepperPrevious-matStepperNext.png)
-
-### 设定 Linear Stepper
-
-Stepper 有一个 `linear` 属性设定后，如果 step 内的表单是 `invalid` 的话，就会无法前进到下一步，这个设定比较复杂，且必须搭配表单验证（form validation）来处理，我们使用 ReactiveForm 来演示：
+使用 Input 相关的功能，先引入 `MatInputModule`。另外，部分表单控制项，需要搭配 FormFiled 组件来使用，所以也要引入 `MatFormFieldModule`。
 
 *src\app\shared-material\shared-material.module.ts*
 
 ```typescript
-import {
-  ...,
-  MatStepperModule,
-  MatFormFieldModule,
-  MatInputModule
-} from '@angular/material';
-
-
-
 @NgModule({
   exports: [
     MatFormFieldModule,
     MatInputModule,
-    MatStepperModule,
     ...
   ]
 })
 export class SharedMaterialModule { }
-
 ```
 
-*src\app\dashboard\dashboard.component.ts*
+### 使用 matInput
 
-```typescript
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-
-@NgModule({
-  declarations: [DashboardComponent, SurveyComponent],
-  imports: [
-    ...,
-    ReactiveFormsModule,
-    DashboardRoutingModule,
-    ..
-  ]
-})
-export class DashboardModule { }
-
-```
-
-*src\app\dashboard\survey\survey.component.ts*
-
-```typescript
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-
-@Component({
-  selector: 'app-survey',
-  templateUrl: './survey.component.html',
-  styleUrls: ['./survey.component.scss']
-})
-export class SurveyComponent implements OnInit {
-
-  // 切换 linear 状态
-  isLinear = true;
-
-  basicFormGroup: FormGroup;
-
-  constructor() {
-    this.basicFormGroup = new FormGroup({
-      name: new FormControl('', Validators.required)
-    });
-  }
-
-  ngOnInit() {
-  }
-
-}
-
-```
+`matInput` 是一个依附于 input 和 text 的表单基本组件上的 directive，所以我们只需在 input 或 textarea 中加入 `matInput` 这个 directive，即可替组件加上基本的 Material Design 样式，不过为了让 input 和 textarea 能更加具有意义，我们会在外面用 `<mat-form-field>` 包起来，这个 `<mat-form-field>` 可以替 input 和 textarea 等组件加上更有意义的信息，让操作更加容易。
 
 *src\app\dashboard\survey\survey.component.html*
 
 ```html
-<!-- isLinear：step 包含 form -->
-<button mat-button (click)="isLinear = !isLinear">切换 Linear 状态 {{ isLinear }}</button>
-<mat-vertical-stepper [linear]="isLinear">
-  <mat-step [stepControl]="basicFormGroup">
-    <form [formGroup]="basicFormGroup">
-      <ng-template matStepLabel><u>个人资讯</u></ng-template><h4>提供个人资讯</h4>
-      <mat-form-field>
-        <input type="text" name="name" matInput placeholder="姓名" formControlName="name" required>
-      </mat-form-field>
-    </form>
-    <button mat-button matStepperNext>前进到「详细问题」</button>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
-    <button mat-button matStepperPrevious>后退到「个人资讯」</button>
-    <button mat-button matStepperNext>前进到「其他」</button>
-  </mat-step>
-  <mat-step label="其他">
-    <h4>其他问题</h4>
-    <button mat-button matStepperPrevious>回到「详细问题」</button>
-  </mat-step>
-</mat-vertical-stepper>
-
+<!-- matInput -->
+<div>
+    <mat-form-field>
+        <input type="text" name="nickname" matInput placeholder="昵称">
+    </mat-form-field>
+</div>
+<div>
+    <mat-form-field>
+        <textarea name="intro_self" matInput placeholder="自我介绍"></textarea>
+    </mat-form-field>
+</div>
 ```
 
- ![isLinear](assets/isLinear.png)
+ ![matInput](assets/matInput.png)
 
-上面的程序中，先在 `<mat-step>` 中设定 `stepControl` 这个设定是用来让整个 step 知道要以哪个 form group 的 valid 状态来决定是否可以推进到下一步，接着里面就只是一般的 ReactiveForm 的设计了。
+`placeholder` 扮演了 `label` 的效果，而且默认会直接在输入框里（就跟一般的 placeholder 一样），但是当 focus 到里面时，placeholder 的内容就往上浮动成一个 label。
 
-### 只用单一一个表单包含所有的 Step 状态
+### matInput 支持的 input type
 
-上面我们用一个 `<mat-step>` 对一个表单的方式，如果不喜欢我们可以使用一个大的表单包住所有的 Step 的方式来设计，只需要同时设计一个大的巢状 `FormGroup` 即可。
+`matInput` 只是个 directive，使用上是直接加到相关的 input 或 textarea 元素中，因此我们依然可以使用所有已知的 input 或 textarea 的属性，来设定我们的输入框。
+
+原生的 input type 基本上都支持，例如：
+
+- date
+- datetime-local
+- email
+- month
+- number
+- password
+- search
+- tel
+- text
+- time
+- url
+- week
+
+```html
+<div>
+    <mat-form-field>
+        <input type="date" name="birthday" matInput placeholder="生日">
+    </mat-form-field>
+</div>
+```
+
+ ![matInput-date](assets/matInput-date.png)
+
+### 使用 mat-hint 加上提示说明
+
+有时候单使用 placeholder 属性可能无法说明输入框的意义，这时候可以使用 `<mat-hint>` 替输入框加上比较仔细地说明，例如：
+
+```html
+<div>
+    <mat-form-field>
+        <textarea name="intro_self" matInput placeholder="自我介绍"></textarea>
+        <!-- matHint -->
+        <mat-hint>简单介绍一下你的兴趣吧！</mat-hint>
+    </mat-form-field>
+</div>
+```
+
+ ![mat-hint](assets/mat-hint.png)
+
+### 使用 mat-error 加上错误信息提示
+
+当文字框内容有问题时，需要提示错误信息时，可以用 `<mat-error>` 来显示错误信息，代码如下：
 
 *src\app\dashboard\survey\survey.component.ts*
 
 ```typescript
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-
 @Component({
   selector: 'app-survey',
   templateUrl: './survey.component.html',
-  styleUrls: ['./survey.component.scss']
+  styleUrls: ['./survey.component.scss'],
+  providers: [{ provide: MatStepperIntl, useClass: MySteppIntl }]
 })
 export class SurveyComponent implements OnInit {
-
-  // 切换 linear 状态
-  isLinear = true;
-
-  surveyForm: FormGroup;
 
   constructor() {
     this.surveyForm = new FormGroup({
       basicQuestions: new FormGroup({
-        name: new FormControl('', Validators.required)
+        name: new FormControl('', Validators.required),
+        intro: new FormControl('', Validators.required)
       })
     });
   }
@@ -266,80 +124,84 @@ export class SurveyComponent implements OnInit {
 *src\app\dashboard\survey\survey.component.html*
 
 ```html
-<p>survey works!</p>
-
-<button mat-button (click)="isLinear = !isLinear">切换 Linear 状态 {{ isLinear }}</button>
-
-<!-- 一个 form 包含所有 step -->
-<form [formGroup]="surveyForm">
-  <mat-vertical-stepper [linear]="isLinear">
-    <mat-step formGroupName="basicQuestions" [stepControl]="surveyForm.get('basicQuestions')">
-      <ng-template matStepLabel><u>个人资讯</u></ng-template><h4>提供个人资讯</h4>
-      <mat-form-field>
-        <input type="text" name="name" matInput placeholder="姓名" formControlName="name" required>
-      </mat-form-field>
-      <button mat-button matStepperNext>前进到「详细问题」</button>
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
-      <button mat-button matStepperPrevious>后退到「个人资讯」</button>
-      <button mat-button matStepperNext>前进到「其他」</button>
-    </mat-step>
-    <mat-step label="其他">
-      <h4>其他问题</h4>
-      <button mat-button matStepperPrevious>回到「详细问题」</button>
-    </mat-step>
-  </mat-vertical-stepper>
-</form>
-
+<div>
+    <mat-form-field>
+        <textarea name="intro_self" matInput placeholder="自我介绍" formControlName="intro" required>
+        </textarea>
+        <!-- matHint -->
+        <mat-hint>简单介绍一下你的兴趣吧！</mat-hint>
+        <!-- matError -->
+        <mat-error>请记得输入自我介绍！</mat-error>
+    </mat-form-field>
+</div>
 ```
 
-这里我们直接在最外面用一个 form 包起来并指定主要的 FormGroup，接着 `<mat-step>` 中指定内部的 `formGroupName`，及 `stepControl`，如此一来就可以用一个大的 model 涵盖所有的 step 的内容了！
+ ![mat-error](assets/mat-error.png)
 
-### 设定 optional step
+只要同一个 `<mat-form-field>` 区间里面的输入框有错误，这个错误信息就会跳出来。
 
-如果某个 step 不是必要的，我们可以在 `<mat-step>` 中设定 `optional` 属性，设定了这个属性后，会在这个 step 的 label 下出现一个灰色的 optional 提示。
-
-> *不过如果有设定 `linear` 属性的话，只要在里面的 form group 是 invalid，依然会无法直接跳到下一步（毕竟 optional 只是参考用的）。*
->
-> **经过试验 `linear` 设置为 true，可以不通过验证进入下一步。**
-
-```html
-<mat-step formGroupName="basicQuestions" [stepControl]="surveyForm.get('basicQuestions')" 
-          optional>[optional]="true"
-    ...
-</mat-step>
-```
-
- ![optional](assets/optional.png)
-
-### 设定 editable step
-
-默认下，每个 step 都是可以被编辑的状态，不过若是希望这个状态不可以利用「上一步」切换回来编辑，可以设定 `editable="false"`
-
-```html
-<mat-step editable="false">
-    <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
-	<button mat-button matStepperPrevious>后退到「个人资讯」</button>
-	<button mat-button matStepperNext>前进到「其他」</button>
-</mat-step>
-```
-
- ![editable](assets/editable.png)
-
-### 自定义 optional label 文字内容
-
-当 `<mat-step>` 加上 `optional`属性后，会显示一个灰色的英文 `optional` 文字标签，不过 Angular Material 可以调整文字内容，使用 `MatStepperIntl` 来设置 optional 文字内容，其中 `optionalLabel` 就是用来设置显示文字的 。
+假如我们希望针对不同的错误跳出不同的信息，只需使用 `ngIf` 或 `ngSwitch` 来依照错误类型来决定显示即可：
 
 *src\app\dashboard\survey\survey.component.ts*
 
 ```typescript
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatStepperIntl } from '@angular/material';
+@Component({
+  selector: 'app-survey',
+  templateUrl: './survey.component.html',
+  styleUrls: ['./survey.component.scss'],
+  providers: [{ provide: MatStepperIntl, useClass: MySteppIntl }]
+})
+export class SurveyComponent implements OnInit {
 
-export class MySteppIntl extends MatStepperIntl {
-  optionalLabel = '非必填';
+  constructor() {
+    this.surveyForm = new FormGroup({
+      basicQuestions: new FormGroup({
+        name: new FormControl('', Validators.required),
+        intro: new FormControl('', [Validators.required, Validators.minLength(10)])
+      })
+    });
+  }
+}
+
+```
+
+*src\app\dashboard\survey\survey.component.html*
+
+```html
+<div>
+    <mat-form-field>
+        <textarea name="intro_self" matInput placeholder="自我介绍" formControlName="intro" required>
+        </textarea>
+        <!-- matHint -->
+        <mat-hint>简单介绍一下你的兴趣吧！</mat-hint>
+        <!-- matError -->
+        <mat-error *ngIf="surveyForm.get('basicQuestions').get('intro').hasError('required')">
+            请记得输入自我介绍！
+        </mat-error>
+        <mat-error *ngIf="surveyForm.get('basicQuestions').get('intro').hasError('minlength')">
+            至少输入 10 个字吧！
+        </mat-error>
+    </mat-form-field>
+</div>
+```
+
+ ![mat-errors](assets/mat-errors.png)
+
+### 自己控制错误显示的时机
+
+默认情况下，错误提示的时机必须符合dirty、touched 和 invalid 的状态，才会显示错误信息，因此以刚刚的状况来说，我们在一开始输入文字时，由于符合 dirty 和 invalid 的状态，但因为第一次进入不会是 touched 状态，因此一开始不会立刻显示错误信息，而是在离开输入框，状态也变更为 touched 后，才会显示错误。
+
+如果希望自己决定错误提示的时机，可以实现 `ErrorStateMatcher` 的 `isErrorState` 方法，来决定何时显示，返回 true 代表显示；并在 input 的 `errorStateMatcher`（加上 `matInput` 扩展功能）指定我们自订的 matcher 即可，来看下下面的例子：
+
+*src\app\dashboard\survey\survey.component.ts*
+
+```typescript
+export class EarlyErrorStateMatcher implements ErrorStateMatcher {
+
+  isErrorState(control: FormControl, form: FormGroupDirective | NgForm): boolean {
+    const isSubmitted = form && form.submitted;
+    return control && control.invalid && control.dirty;
+  }
 }
 
 @Component({
@@ -348,10 +210,300 @@ export class MySteppIntl extends MatStepperIntl {
   styleUrls: ['./survey.component.scss'],
   providers: [{ provide: MatStepperIntl, useClass: MySteppIntl }]
 })
-export class SurveyComponent implements OnInit {...}
+export class SurveyComponent implements OnInit {
 
+  // 切换 linear 状态
+  isLinear = true;
+
+  surveyForm: FormGroup;
+
+  earlyErrorStateMatcher = new EarlyErrorStateMatcher();
+}
 ```
 
- ![MatStepperIntl](assets/MatStepperIntl.png)
+*src\app\dashboard\survey\survey.component.html*
 
-这里我们只对 SurveyComponent 的 Stepper 去设定，如果希望能在所有组件使用到 Stepper 都用到的话，可以加在更外层的 Module 中。
+```html
+<div>
+    <mat-form-field>
+        <!-- ErrorStateMatcher -->
+        <textarea name="intro_self" matInput placeholder="自我介绍" formControlName="intro" required
+                  [errorStateMatcher]="earlyErrorStateMatcher"></textarea>
+        <!-- matHint -->
+        <mat-hint>简单介绍一下你的兴趣吧！</mat-hint>
+        <!-- matError -->
+        <mat-error *ngIf="surveyForm.get('basicQuestions').get('intro').hasError('required')">
+            请记得输入自我介绍！
+        </mat-error>
+        <mat-error *ngIf="surveyForm.get('basicQuestions').get('intro').hasError('minlength')">
+            至少输入 10 个字吧！
+        </mat-error>
+    </mat-form-field>
+</div>
+```
+
+ ![ErrorStateMatcher](assets/ErrorStateMatcher.png)
+
+当我们输入内容时，立即符合了我们自订的 matcher 规则，所以不用等到移出焦点编程 touched 状态，就会提早显示错误信息了！
+
+如果要在全区域的范围套用这个规则，可以在 providers 中注入这个 macher
+
+*src\app\dashboard\survey\survey.component.ts*
+
+```typescript
+@Component({
+  selector: 'app-survey',
+  templateUrl: './survey.component.html',
+  styleUrls: ['./survey.component.css'],
+  providers: [{ provide: MatStepperIntl, useClass: TwStepperIntl }, { provide: ErrorStateMatcher, useClass: EarlyErrorStateMatcher }]
+})
+export class SurveyComponent implements OnInit {}
+```
+
+### 使用 matTextareaAutosize 自动调整大小的 textarea
+
+我们可以为 textarea 加上自动调整大小功能，只需要加入 `matTextareaAutoSize` 这个 directive 即可：
+
+```html
+<textarea name="intro_self" matInput placeholder="自我介绍" formControlName="intro" required
+                    matTextareaAutosize></textarea>
+```
+
+ ![matTextareaAutosize](assets/matTextareaAutosize.png)
+
+## 开始使用 Angular Material 的 Autocomplete
+
+要使用 Input 的 Autocomplete 相关功能，首先需要加入 `MatAutocompleteModule`。
+
+*src\app\shared-material\shared-material.module.ts*
+
+```typescript
+@NgModule({
+  exports: [
+    MatAutocompleteModule,
+    ...
+  ]
+})
+export class SharedMaterialModule { }
+```
+
+### 使用 mat-autocomplete
+
+下面来看 Autocomplete 的功能，在这边我们希望能完成一个「国家」的输入框，并且能够依照输入的内容选择自动完成的清单：
+
+*src\app\app.module.ts*
+
+```typescript
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+*src\app\dashboard\survey\survey.component.ts*
+
+```typescript
+@Component({
+  selector: 'app-survey',
+  templateUrl: './survey.component.html',
+  styleUrls: ['./survey.component.scss'],
+  providers: [
+    { provide: MatStepperIntl, useClass: MySteppIntl },
+    { provide: ErrorStateMatcher, useClass: EarlyErrorStateMatcher }
+  ]
+})
+export class SurveyComponent implements OnInit {
+
+  // 切换 linear 状态
+  isLinear = true;
+
+  surveyForm: FormGroup;
+
+  earlyErrorStateMatcher = new EarlyErrorStateMatcher();
+
+  countries$: Observable<any[]>;
+
+  constructor(private httpClient: HttpClient) {
+    this.surveyForm = new FormGroup({
+      basicQuestions: new FormGroup({
+        name: new FormControl('', Validators.required),
+        intro: new FormControl('', [Validators.required, Validators.minLength(10)]),
+        country: new FormControl('')
+      })
+    });
+  }
+
+  ngOnInit() {
+    this.countries$ = this.httpClient.get<any[]>('assets/countries.json');
+  }
+
+}
+```
+
+*src\app\dashboard\survey\survey.component.html*
+
+```html
+<!-- 使用 mat-autocomplete -->
+<div>
+    <mat-form-field>
+        <input type="text" name="country" matInput placeholder="国家" formControlName="country" 
+               [matAutocomplete]="countries">
+    </mat-form-field>
+    <mat-autocomplete #countries="matAutocomplete">
+        <mat-option *ngFor="let country of countries$ | async" [value]="country.code">
+            {{ country.name }}
+        </mat-option>
+    </mat-autocomplete>
+</div>
+```
+
+ ![mat-autocomplete](assets/mat-autocomplete.png)
+
+从上面的代码，我们使用 2 种组件，一个是文字输入框，使用简单的 input；一个是 Autocomplete 清单，使用 `<mat-autocomplete>` 以及 `<mat-option>` 的组合来简历这组清单。并把清单数据存档 *src\assets\countries.json* 中，然后再组件中使用 `HTTPClient` 抓取清单数据。最后，在页面上设置 input 的 `matAutocomplete` 属性，指定 autocomplete 的来源。
+
+### 过数据料来源
+
+我们可能会希望过滤已经输入的内容，避免从冗长的清单中选取，由于我们目前使用的是 ReactiveForm，因此我们可以使用 `valueChanges`，在资料变更时重新筛选要列出的清单：
+
+```typescript
+ngOnInit() {
+    this.surveyForm
+        .get('basicQuestions').get('country')
+        .valueChanges.pipe(debounceTime(300)).subscribe(value => {
+          this.countries$ = this.httpClient.get('assets/countries.json').pipe(map((countries: any[]) => {
+            const list = countries.filter(country => country.name.indexOf(value) >= 0);
+            return list;
+          }));
+        });
+  }
+```
+
+另外，我们可以把已经过滤的资料内容做点修饰，依照我们输入的内容变成粗体显示：
+
+```typescript
+highlightFiltered(countryName: string) {
+    const inputCountry = this.surveyForm.get('basicQuestions').get('country').value;
+    return countryName.replace(inputCountry, `<span class="autocomplete-highlight">${inputCountry}</span>`);
+  }
+```
+
+在 *src\styles.scss* 中加入样式：
+
+```scss
+.autocomplete-highlight {
+    font-weight: bold;
+    background: orange;
+}
+```
+
+> 由代码生成的元素所带的样式都会出现在页面上，样式属于全局
+
+最后调整页面：
+
+```html
+<!-- 使用 mat-autocomplete -->
+<div>
+    <mat-form-field>
+        <input type="text" name="country" matInput placeholder="国家" formControlName="country" 
+               [matAutocomplete]="countries">
+    </mat-form-field>
+    <mat-autocomplete #countries="matAutocomplete">
+        <mat-option *ngFor="let country of countries$ | async" [value]="country.code">
+            <!-- {{ country.name }} -->
+            <span [innerHTML]="highlightFiltered(country.name)"></span>
+        </mat-option>
+    </mat-autocomplete>
+</div>
+```
+
+ ![mat-autocomplete-filter](assets/mat-autocomplete-filter.png)
+
+### 通过 displayWith 决定最终显示内容
+
+我们可以通过设置 `<mat-autocomplete>` 的 `displayWith` 属性来指定一个 function，这个 function 可以改变要显示的内容：
+
+*src\app\dashboard\survey\survey.component.ts*
+
+```typescript
+displayCountry(country: any) {
+    if (country) {
+        return `${country.name} / ${country.code}`;
+    }
+    return '';
+}
+```
+
+*src\app\dashboard\survey\survey.component.html*
+
+```html
+<mat-form-field>
+    <input type="text" name="country" matInput placeholder="国家" formControlName="country" 
+           [matAutocomplete]="countries">
+</mat-form-field>
+<mat-autocomplete #countries="matAutocomplete" [displayWith]="displayCountry">
+    <mat-option *ngFor="let country of countries$ | async" [value]="country">
+        <span [innerHTML]="highlightFiltered(country.name)"></span>
+    </mat-option>
+</mat-autocomplete>
+```
+
+这里 我们把原来的 `[value]` 改为传入整个 country 数据，好让 `displayWith` 指定的 function 可以通过选择的数据决定文字呈现的内容。
+
+ ![displayWith](assets/displayWith.png)
+
+可以看到在选择完国家后，通过 `displayWith`，我们自动为选择的内容加上了国家的编码。
+
+### 使用 mat-optgroup 显示分组数据
+
+`<mat-option>` 既然是清单型的选项资料，有个 `<mat-optgroup>` 作为分组好像也是合理的事，使用起来和 select 的 optgroup 大同小异。
+
+*src\app\dashboard\survey\survey.component.ts*
+
+```typescript
+export class SurveyComponent implements OnInit {
+    
+  majorTechList: any[];
+    
+  constructor(private httpClient: HttpClient) {
+     this.majorTechList = [
+      {
+        name: '前端', items: ['HTML', 'CSS', 'JavaScript']
+      },
+      {
+        name: '后端', items: ['Java', 'NodeJS', 'Go']
+      }
+    ];
+  }
+}
+```
+
+*src\app\dashboard\survey\survey.component.html*
+
+```html
+<!-- 使用 mat-optgroup 显示分组数据 -->
+<div>
+    <mat-form-field>
+        <input type="text" name="majorTech" matInput placeholder="代表技术" formControlName="majorTech"
+               [matAutocomplete]="majorTeches">
+    </mat-form-field>
+    <mat-autocomplete #majorTeches="matAutocomplete">
+        <mat-optgroup *ngFor="let majorTech of majorTechList" [label]="majorTech.name">
+            <mat-option *ngFor="let item of majorTech.items" [value]="item">
+                {{ item }}
+            </mat-option>
+        </mat-optgroup>
+    </mat-autocomplete>
+</div>
+```
+
+ ![mat-optgroup](assets/mat-optgroup.png)
