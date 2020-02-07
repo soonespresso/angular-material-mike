@@ -9,13 +9,15 @@ import {
   MatStepperModule,
   MatFormFieldModule,
   MatInputModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatDatepickerModule
 } from '@angular/material';
 
 
 
 @NgModule({
   exports: [
+    MatDatepickerModule,
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
