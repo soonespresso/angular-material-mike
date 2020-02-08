@@ -76,6 +76,19 @@
         </mat-autocomplete>
       </div>
 
+      <!-- 使用 mat-datepicker 选择日期 -->
+      <div>
+        <mat-form-field>
+          <input type="text" name="birthday" matInput placeholder="生日" formControlName="birthday"
+                [matDatepicker]="birthdayPicker" [min]="minDate" [max]="maxDate"
+                [matDatepickerFilter]="familyDayFilter"
+                (dateInput)="logDateInput($event)" (dateChange)="logDateChange($event)">
+                <!-- (input)="logDateInput($event)" (change)="logDateChange($event) -->
+          <mat-datepicker-toggle [for]="birthdayPicker" matSuffix disabled></mat-datepicker-toggle><!-- disabled -->
+          <mat-datepicker #birthdayPicker [startAt]="startDate" touchUi></mat-datepicker><!-- startView="year" disabled="false"  -->
+        </mat-form-field>
+        <button mat-raised-button (click)="birthdayPicker.opened = true">打开 Datepicker</button>
+      </div>
 
       <div>
         <button mat-button matStepperNext>前进到「详细问题」</button>

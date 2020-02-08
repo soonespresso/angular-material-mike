@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import { MatStepperIntl, ErrorStateMatcher } from '@angular/material';
+import { MatStepperIntl, ErrorStateMatcher, MatDatepickerInputEvent } from '@angular/material';
 import { Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 
 export class MySteppIntl extends MatStepperIntl {
   optionalLabel = '非必填';
@@ -42,13 +43,18 @@ export class SurveyComponent implements OnInit {
 
   majorTechList: any[];
 
+  startDate: moment.Moment;
+  minDate: moment.Moment;
+  maxDate: moment.Moment;
+
   constructor(private httpClient: HttpClient) {
     this.surveyForm = new FormGroup({
       basicQuestions: new FormGroup({
         name: new FormControl('', Validators.required),
         intro: new FormControl('', [Validators.required, Validators.minLength(10)]),
         country: new FormControl(''),
-        majorTech: new FormControl('')
+        majorTech: new FormControl(''),
+        birthday: new FormControl({ value: '', disabled: false })
       })
     });
 
@@ -60,6 +66,10 @@ export class SurveyComponent implements OnInit {
         name: '后端', items: ['Java', 'NodeJS', 'Go']
       }
     ];
+
+    this.startDate = moment(new Date(2020, 1, 7)); // 2020-2-7
+    this.minDate = moment(new Date(2020, 0, 14)); // moment('2020-1-14');
+    this.maxDate = moment(new Date(2020, 1, 27)); // moment('2020-2-29');
   }
 
   // 一个 Step 一个 Form
@@ -97,5 +107,21 @@ export class SurveyComponent implements OnInit {
       return `${country.name} / ${country.code}`;
     }
     return '';
+  }
+
+
+  familyDayFilter(date: moment.Moment) {
+    const day = date.day();
+    return day !== 2 && day !== 5;
+  }
+
+  logDateInput($event: /* any */MatDatepickerInputEvent<moment.Moment>) {
+    console.log('logDateInput');
+    console.log($event);
+  }
+
+  logDateChange($event: /* any */MatDatepickerInputEvent<moment.Moment>) {
+    console.log('logDateChange');
+    console.log($event);
   }
 }

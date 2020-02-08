@@ -10,13 +10,31 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatAutocompleteModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+  MAT_NATIVE_DATE_FORMATS
 } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY-MM-DD'
+  },
+  display: {
+    dateInput: 'YYYY-MM-DD',
+    monthYearLabel: 'YYYY MMM',
+    dateA11yLabel: 'YYYY/MM/DD',
+    monthYearA11Label: 'YYYY MMM'
+  }
+};
 
 @NgModule({
   exports: [
+    MatMomentDateModule,
+    // MatNativeDateModule,
     MatDatepickerModule,
     MatAutocompleteModule,
     MatFormFieldModule,
@@ -30,6 +48,14 @@ import {
     MatSidenavModule,
     MatButtonModule,
     MatIconModule
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'zh-CN' },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS/* MAT_NATIVE_DATE_FORMATS */  }
   ]
 })
-export class SharedMaterialModule { }
+export class SharedMaterialModule {
+  constructor() {
+    console.log(MAT_NATIVE_DATE_FORMATS);
+  }
+}
