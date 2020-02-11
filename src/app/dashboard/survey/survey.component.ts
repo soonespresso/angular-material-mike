@@ -42,6 +42,8 @@ export class SurveyComponent implements OnInit {
   countries$: Observable<any[]>;
 
   majorTechList: any[];
+  interestList: any[];
+  nestInterestList: any[];
 
   startDate: moment.Moment;
   minDate: moment.Moment;
@@ -54,7 +56,8 @@ export class SurveyComponent implements OnInit {
         intro: new FormControl('', [Validators.required, Validators.minLength(10)]),
         country: new FormControl(''),
         majorTech: new FormControl(''),
-        birthday: new FormControl({ value: '', disabled: false })
+        birthday: new FormControl({ value: '', disabled: false }),
+        interest: new FormControl(null)
       })
     });
 
@@ -66,6 +69,33 @@ export class SurveyComponent implements OnInit {
         name: '后端', items: ['Java', 'NodeJS', 'Go']
       }
     ];
+    this.interestList = [
+      { id: 1, name: '桌球' },
+      { id: 2, name: '网球' },
+      { id: 3, name: '羽毛球' },
+      { id: 4, name: '篮球' },
+      { id: 5, name: '乒乓球' }
+    ];
+    this.nestInterestList = [
+      {
+        id: 1,
+        name: '球类',
+        subItems: [
+          { id: 11, name: '桌球' },
+          { id: 12, name: '网球' },
+          { id: 13, name: '篮球' }
+        ]
+      },
+      {
+        id: 2,
+        name: '其他',
+        subItems: [
+          { id: 21, name: '游泳' },
+          { id: 22, name: '跑步' }
+        ]
+      }
+    ];
+
 
     this.startDate = moment(new Date(2020, 1, 7)); // 2020-2-7
     this.minDate = moment(new Date(2020, 0, 14)); // moment('2020-1-14');

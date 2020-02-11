@@ -90,6 +90,25 @@
         <button mat-raised-button (click)="birthdayPicker.opened = true">打开 Datepicker</button>
       </div>
 
+      <!-- 使用 mat-select 和 mat-option -->
+      <div>
+        <mat-form-field>
+          <mat-select formControlName="interest" #selectInterest placeholder="兴趣爱好" multiple disableRipple panelClass="blue-dropdown">
+            <mat-select-trigger>
+              一共选择了 {{ selectInterest.selected['length'] }} 项爱好
+            </mat-select-trigger>
+            <mat-option [value]="undefined">无</mat-option>
+            <mat-optgroup *ngFor="let parent of nestInterestList; let index = index;"
+                          [label]="parent.name" [disabled]="index === 1">
+              <mat-option *ngFor="let item of parent.subItems" [value]="item.id">
+                {{ item.name }}
+              </mat-option>
+            </mat-optgroup>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
       <div>
         <button mat-button matStepperNext>前进到「详细问题」</button>
       </div>

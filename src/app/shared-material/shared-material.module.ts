@@ -14,7 +14,8 @@ import {
   MatNativeDateModule,
   MAT_DATE_LOCALE,
   MAT_DATE_FORMATS,
-  MAT_NATIVE_DATE_FORMATS
+  MAT_NATIVE_DATE_FORMATS,
+  MatSelectModule
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
@@ -33,6 +34,7 @@ export const MY_FORMATS = {
 
 @NgModule({
   exports: [
+    MatSelectModule,
     MatMomentDateModule,
     // MatNativeDateModule,
     MatDatepickerModule,
