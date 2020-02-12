@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import { MatStepperIntl, ErrorStateMatcher, MatDatepickerInputEvent } from '@angular/material';
+import { MatStepperIntl, ErrorStateMatcher, MatDatepickerInputEvent, MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material';
 import { Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -27,7 +27,8 @@ export class EarlyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./survey.component.scss'],
   providers: [
     { provide: MatStepperIntl, useClass: MySteppIntl },
-    { provide: ErrorStateMatcher, useClass: EarlyErrorStateMatcher }
+    { provide: ErrorStateMatcher, useClass: EarlyErrorStateMatcher },
+    { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: { float: 'always' } }
   ]
 })
 export class SurveyComponent implements OnInit {

@@ -7,16 +7,37 @@
   <mat-vertical-stepper [linear]="isLinear">
     <mat-step formGroupName="basicQuestions" [stepControl]="surveyForm.get('basicQuestions')" [optional]="true">
       <ng-template matStepLabel><u>个人资讯</u></ng-template><h4>提供个人资讯</h4>
-      <mat-form-field>
-        <input type="text" name="name" matInput placeholder="姓名" formControlName="name" required>
-      </mat-form-field>
 
-      <!-- matInput -->
+      <!-- floatLabel: always、never -->
+      <!-- placeholder="姓名" -->
+      <mat-form-field floatLabel="always" [hideRequiredMarker]="false" hintLabel="最多输入 5 个字">
+        <input type="text" name="name" matInput formControlName="name" required>
+        <mat-placeholder>
+          <mat-icon>person</mat-icon>请输入您的名字
+        </mat-placeholder>
+        <!-- mat-hint -->
+        <mat-hint align="end">
+          已输入：{{ surveyForm.get('basicQuestions')?.get('name')?.value?.length || 0 }} / 5
+        </mat-hint>
+        <!-- mat-error -->
+        <mat-error>姓名有误！</mat-error>
+      </mat-form-field>
       <div>
-        <mat-form-field>
+        <mat-form-field floatLabel="never" color="accent">
           <input type="text" name="nickname" matInput placeholder="昵称">
         </mat-form-field>
       </div>
+
+
+      <!-- prefix 和 suffix -->
+      <div>
+        <mat-form-field>
+          <input type="number" matInput placeholder="请问您的平均日常消费?">
+          <mat-icon matPrefix>attach_money</mat-icon>
+          <span matSuffix>RMB</span>
+        </mat-form-field>
+      </div>
+
       <div>
         <mat-form-field>
           <!-- ErrorStateMatcher -->
