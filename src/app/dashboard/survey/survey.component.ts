@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import { MatStepperIntl, ErrorStateMatcher, MatDatepickerInputEvent, MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material';
+import {
+  MatStepperIntl,
+  ErrorStateMatcher,
+  MatDatepickerInputEvent,
+  MAT_LABEL_GLOBAL_OPTIONS,
+  MatCheckboxChange,
+  MAT_CHECKBOX_CLICK_ACTION
+} from '@angular/material';
 import { Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -28,7 +35,8 @@ export class EarlyErrorStateMatcher implements ErrorStateMatcher {
   providers: [
     { provide: MatStepperIntl, useClass: MySteppIntl },
     { provide: ErrorStateMatcher, useClass: EarlyErrorStateMatcher },
-    { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: { float: 'always' } }
+    { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: { float: 'always' } },
+    { provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'check-indeterminate' } // noop | check | check-indeterminate
   ]
 })
 export class SurveyComponent implements OnInit {
@@ -50,6 +58,8 @@ export class SurveyComponent implements OnInit {
   minDate: moment.Moment;
   maxDate: moment.Moment;
 
+  indeterminateSelectedPayFor: boolean;
+
   constructor(private httpClient: HttpClient) {
     this.surveyForm = new FormGroup({
       basicQuestions: new FormGroup({
@@ -59,6 +69,19 @@ export class SurveyComponent implements OnInit {
         majorTech: new FormControl(''),
         birthday: new FormControl({ value: '', disabled: false }),
         interest: new FormControl(null)
+      }),
+      mainQuestions: new FormGroup({
+        payForAll: new FormControl(false),
+        payForBook: new FormControl(false),
+        payForMusic: new FormControl(false),
+        payForMovie: new FormControl(true),
+
+        angularLikeScore: new FormControl(5),
+        angularMaterialLikeScore: new FormControl(5),
+
+        subscribeAngular: new FormControl(true),
+        subscribeAngularMaterial: new FormControl(true),
+        subscribeNgRx: new FormControl(false)
       })
     });
 
@@ -154,5 +177,29 @@ export class SurveyComponent implements OnInit {
   logDateChange($event: /* any */MatDatepickerInputEvent<moment.Moment>) {
     console.log('logDateChange');
     console.log($event);
+  }
+
+
+  checkAllChange($event: MatCheckboxChange) {
+    const mainQuestions: FormGroup = this.surveyForm.get('mainQuestions') as FormGroup;
+    mainQuestions.get('payForBook').setValue($event.checked);
+    mainQuestions.get('payForMusic').setValue($event.checked);
+    mainQuestions.get('payForMovie').setValue($event.checked);
+    // setValue 不会触发 payForChange
+  }
+
+  payForChange() {
+    console.log('payForChange');
+    this._setSelectAllState();
+  }
+
+  private _setSelectAllState() {
+    const mainQuestions: FormGroup = this.surveyForm.get('mainQuestions') as FormGroup;
+    const payForBookValue = mainQuestions.get('payForBook').value ? 1 : 0;
+    const payForMusicValue = mainQuestions.get('payForMusic').value ? 1 : 0;
+    const payForMovieValue = mainQuestions.get('payForMovie').value ? 1 : 0;
+    const count = payForBookValue + payForMusicValue + payForMovieValue;
+    mainQuestions.get('payForAll').setValue(count === 3);
+    this.indeterminateSelectedPayFor = count > 0 && count < 3;
   }
 }

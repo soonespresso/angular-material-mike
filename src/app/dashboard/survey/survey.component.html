@@ -128,14 +128,58 @@
           </mat-select>
         </mat-form-field>
       </div>
-
-
       <div>
         <button mat-button matStepperNext>前进到「详细问题」</button>
       </div>
     </mat-step>
-    <mat-step editable="false">
+    <mat-step editable="false" formGroupName="mainQuestions" [stepControl]="surveyForm.get('mainQuestions')">
       <ng-template matStepLabel><em>详细问题</em></ng-template><h4>主要问题内容</h4>
+
+      <!-- 使用 mat-checkbox -->
+      <div>
+        <div>除了生活消费外，您最常花费在哪些项目上？</div>
+        <mat-checkbox formControlName="payForAll" [indeterminate]="indeterminateSelectedPayFor" (change)="checkAllChange($event)">
+          全部
+        </mat-checkbox>|
+        <mat-checkbox formControlName="payForBook" labelPosition="before" (change)="payForChange()" color="primary">书籍</mat-checkbox>
+        <mat-checkbox formControlName="payForMusic" (change)="payForChange()" color="accent">音乐</mat-checkbox>
+        <mat-checkbox formControlName="payForMovie" (change)="payForChange()" color="warn">电影</mat-checkbox>
+      </div>
+
+      <!-- 使用 Angular Material 的 Radio -->
+      <br>
+      <div>
+        <div>对于 Angular，你的评价是？</div>
+        <mat-radio-group formControlName="angularLikeScore" labelPosition="before">
+          <mat-radio-button [value]="1">超讨厌</mat-radio-button>
+          <mat-radio-button [value]="2">讨厌</mat-radio-button>
+          <mat-radio-button [value]="3">普通</mat-radio-button>
+          <mat-radio-button [value]="4">喜欢</mat-radio-button>
+          <mat-radio-button [value]="5" labelPosition="after">超喜欢</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <br>
+      <div>
+        <div>对于 Angular Material，你的评价是？</div>
+        <mat-radio-group formControlName="angularMaterialLikeScore">
+          <mat-radio-button [value]="1" color="primary">超讨厌</mat-radio-button>
+          <mat-radio-button [value]="2" color="accent">讨厌</mat-radio-button>
+          <mat-radio-button [value]="3" color="warn">普通</mat-radio-button>
+          <mat-radio-button [value]="4">喜欢</mat-radio-button>
+          <mat-radio-button [value]="5">超喜欢</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <br>
+
+      <!-- 使用 mat-slide-toggle -->
+      <div>
+        <div>订阅电子报</div>
+        <div><mat-slide-toggle formControlName="subscribeAngular" labelPosition="before" color="primary">Angular 技巧全集</mat-slide-toggle></div>
+        <div><mat-slide-toggle formControlName="subscribeAngularMaterial" color="accent">Angular Material 全攻略</mat-slide-toggle></div>
+        <div><mat-slide-toggle formControlName="subscribeNgRx" color="warn">NgRx 入门班</mat-slide-toggle></div>
+      </div>
+
       <button mat-button matStepperPrevious>后退到「个人资讯」</button>
       <button mat-button matStepperNext>前进到「其他」</button>
     </mat-step>
