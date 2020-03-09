@@ -6,10 +6,11 @@ import { DashboardComponent } from './dashboard.component';
 import { SharedMaterialModule } from '../shared-material/shared-material.module';
 import { SurveyComponent } from './survey/survey.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BlogComponent } from './blog/blog.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, SurveyComponent],
+  declarations: [DashboardComponent, SurveyComponent, BlogComponent],
   imports: [
     CommonModule,
     FormsModule,

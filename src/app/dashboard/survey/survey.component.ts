@@ -100,6 +100,7 @@ export class SurveyComponent implements OnInit {
         favoriteColorRed: new FormControl(0),
         favoriteColorGreen: new FormControl(0),
         favoriteColorBlue: new FormControl(0),
+        surveyScore: new FormControl(5)
       })
     });
 

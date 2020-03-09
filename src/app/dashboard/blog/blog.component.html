@@ -1,0 +1,57 @@
+<!-- mat-grid-tile 加上 header 與 footer -->
+<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
+  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
+  <mat-grid-tile style="background: teal;" rowspan="5">
+
+    <mat-grid-tile-header>
+      <h3 mat-line>功能清单</h3>
+      <span mat-line>选择你要的</span>
+      <mat-icon>list</mat-icon>
+    </mat-grid-tile-header>
+
+    <mat-grid-tile-footer>
+      <span mat-line>Angular</span>
+      <span mat-line>Vue</span>
+      <span mat-line>React</span>
+      <mat-icon>thumb_up</mat-icon>
+    </mat-grid-tile-footer>
+    Tile 2（右边清单讯息）
+  </mat-grid-tile>
+  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">Tile 3（文章内容区）</mat-grid-tile>
+  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4（下方横幅广告）</mat-grid-tile>
+</mat-grid-list>
+
+<!-- gutterSize 调整 cell 的间距 -->
+<!-- <mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
+  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
+  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
+  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">Tile 3（文章内容区）</mat-grid-tile>
+  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4（下方横幅广告）</mat-grid-tile>
+</mat-grid-list> -->
+
+<!-- colspan：横向跨越 2 -->
+<!-- rowspan：纵向跨越 5 -->
+<!-- <mat-grid-list cols="3" rowHeight="4:1">
+  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
+  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
+  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">Tile 3（文章内容区）</mat-grid-tile>
+  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4（下方横幅广告）</mat-grid-tile>
+</mat-grid-list> -->
+
+
+
+<!-- rowHeight：宽高比例 -->
+<!-- <mat-grid-list cols="3" rowHeight="4:1">
+  <mat-grid-tile style="background: royalblue;">Tile 1</mat-grid-tile>
+  <mat-grid-tile style="background: teal;">Tile 2</mat-grid-tile>
+  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
+  <mat-grid-tile style="background: seagreen;">Tile 4</mat-grid-tile>
+</mat-grid-list>
+ -->
+<!-- rowHeight：给定高度 -->
+<!-- <mat-grid-list cols="3" rowHeight="100px">
+  <mat-grid-tile style="background: royalblue;">Tile 1</mat-grid-tile>
+  <mat-grid-tile style="background: teal;">Tile 2</mat-grid-tile>
+  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
+  <mat-grid-tile style="background: seagreen;">Tile 4</mat-grid-tile>
+</mat-grid-list> -->
