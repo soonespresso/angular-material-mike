@@ -1,239 +1,321 @@
-# 设计一个部落格 - Grid List
+# 设计一个部落格 - Card
 
-今天我们来看看在 Material Design 其中一种显示清单资料的方法 —— Grid List，以及 Angular Material 中如何实现应用这样的方法，将一个简易的部落格版型给切出来！
+今天我们要介绍一个 Material Design 中被使用频率非常高，且很经典的组件 —— Card。利用 Card 来当做部落格列表的呈现方式。
 
-## 关于 Material Design 中的 Grid List
+## 关于 Material Design 中的 Card
 
-在 [Material Design 的 Grid List 设计指南](https://material.io/components/image-lists/#)中，Grid List 是一种用**网格**呈现重复性资料方式，可以想象成是用来放置多组类似的组件容器，**具有水平和垂直的排列组合**，来呈现资料。由于有水平和垂直的排列组合，我们也可以想象 Grid List 是一种类似表格式的排版（当然不是真的用 `<table>` 去排版）。
+在[Material Design 的 Cards 设计指南](https://material.io/components/cards/#)中，Card 是用来针对某一**主题**放置图片、文字或链接的地方，它能够把这些图片、文字或链接都整合到一个卡片之中，而这个卡片就代表了我们的目标主题。
 
- ![grid-list-basic-concept](assets/grid-list-basic-concept.png)
+由于 Card 是 Material Design 中最主要的资料显示方式，因此里面的资料呈现也有很多不同丰富的变化，建议可以直接进去说明文档里看，会对于 Card 的呈现方式更加的有感觉。
 
-Grid List 使用的是网络的概念，每一个格子称之为 Cell，Tile 则代表用来放置内容的容器，且一个 Tile 是可以横跨多个 Cells 的。
+## 开始使用 Angular Material 的 Card
 
- ![grid-list-cell-tile](assets/grid-list-cell-tile.png)
+### 调整一下 Grid List
 
-## 开始使用 Angular Material 的 Grid List
+我们先将原来的 Grid List 排版做点调整，预期结果如下：
 
-在 Angular Material 中 Grid List 主要由 2 个组件组件，分别是：
+![mat-card-final](assets/mat-card-final.png)
 
-- `<mat-grid-list>`：用来设置 Grid List 的基本状态
-- `<mat-grid-tile>`：放置在 `<mat-grid-list>` 中，代表一个又一个的 tile，我们可以在 `<mat-grid-list>` 中设置它会横跨几个垂直或水平的 cell。
+在主要的文章清单中，最上方位有 2个*置顶文章*，而下面会显示 6 篇*清单文章*，每篇宽度占 1格cell。
+高度在规划后，*置顶文章* 需要占掉 2格cell，*清单文章* 需要占掉 6格cell。
+6篇 *清单文章* 共 3列，就会用掉 18格cell的高度，加上 *置顶文章* 的 2格，共 20格cell的高度。
+另外加上 *上下横幅* 各1格，加起来**总共会用 22格cell的高度**。
+因此原来放置右边菜单的 Tile2 该高度会重新设置为 `rowspan="22"`。
 
-只需要加入 `MatGridListModule`，就可以开始使用 Grid List 的功能：
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
+  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
+  
+  <mat-grid-tile style="background: teal;" rowspan="22">
+    <mat-grid-tile-header>...</mat-grid-tile-header>
+    <mat-grid-tile-footer>...</mat-grid-tile-footer>
+    Tile 2（右边清单讯息）
+  </mat-grid-tile>
+
+  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">
+    Tile 3（文章内容区）
+  </mat-grid-tile>
+  <mat-grid-tile style="background: seagreen;" colspan="2">
+    Tile 4（下方横幅广告）
+  </mat-grid-tile>
+</mat-grid-list>
+```
+
+另外，我们将 Tile 3 当做整个放文章的容器，但目前 `<mat-grid-list>` 是没办法直接巢状使用的，也就是在 `<mat-grid-list>` 中，我们无法加上 `<mat-grid-list> `的，虽然不会出错，但也不会显示内容（实际上跑掉了），比较简单的方式就是重新规划好 `cols` 及 `rowHeight`，每个 Tile 里面就直接放置内容就好。
+
+另外，拿掉 `gutterSize`，以免影响内容显示，调整后的程序大致如下：
+
+*src\app\dashboard\blog\blog.component.ts*
+
+```typescript
+export class BlogComponent implements OnInit {
+
+  post$: Observable<any>;
+
+  constructor(private httpClient: HttpClient) { }
+
+  ngOnInit() {
+    this.post$ = this.httpClient.get<any[]>('https://jsonplaceholder.typicode.com/posts')
+        .pipe(map(post => {
+	      return post.slice(0, 6);
+    	})
+    );
+  }
+}
+```
+
+> 资料来源：https://jsonplaceholder.typicode.com/guide.html
+
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<mat-grid-list cols="3" rowHeight="100px">
+  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
+  <mat-grid-tile style="background: teal;" rowspan="22">
+
+    <mat-grid-tile-header>...</mat-grid-tile-header>
+
+    <mat-grid-tile-footer>...</mat-grid-tile-footer>
+    Tile 2（右边清单讯息）
+  </mat-grid-tile>
+
+  <mat-grid-tile style="background: slateblue;" rowspan="2">
+    置顶文章 1
+  </mat-grid-tile>
+  <mat-grid-tile style="background: slateblue;" rowspan="2">
+    置顶文章 2
+  </mat-grid-tile>
+
+  <mat-grid-tile style="background: slateblue;" *ngFor="let post of post$ | async" rowspan="6">
+    {{ post.title }}
+  </mat-grid-tile>
+
+  <mat-grid-tile style="background: seagreen;" colspan="2">
+    Tile 4（下方横幅广告）
+  </mat-grid-tile>
+</mat-grid-list>
+```
+
+ ![mat-card-tile3](assets/mat-card-tile3.png)
+
+接下来在加入 `MatCardModule` 之后，我们就正式开始用 Card 组件来填满我们的 tile 吧！
 
 *src\app\shared-material\shared-material.module.ts*
 
 ```typescript
 @NgModule({
   exports: [
-    MatGridListModule,
+    MatCardModule,
     ...
   ]
 })
-export class SharedMaterialModule {}
+export class SharedMaterialModule {...}
 ```
 
-虽然 Grid List 适合用来放置复杂的清单资料，但也很适**合当做一个排版系统来使用**，虽然针对排版 Angular 也有一套 `angular/flex-layout` 可以使用，但 Angular Material 的 Grid List 概念相对简单，而且使用上非常贴近我们熟悉的 Table，虽然功能没那么强大，但基本的排版可以说是完全没有问题。下面我们介绍时会把它当做排版系统。
+### 使用 mat-card 建立卡片
 
-### 使用 mat-grid-list
-
-所有的 Grid List 都是使用 `<mat-grid-list>` 作为 起手式，而 `<mat-grid-list>` 至少需要设置一个参数：`cols`，代表这个 Grid List 会有几个栏位资料。
+我们可以使用 `<mat-card>` 立刻建立一个简单的卡片，如下：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-list cols="3">
-  <mat-grid-tile style="background: royalblue;">Tile 1</mat-grid-tile>
-  <mat-grid-tile style="background: teal;">Tile 2</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
-</mat-grid-list>
-
+![mat-card-title](C:/Users/Administrator/Desktop/mat-card-title.png<mat-grid-tile *ngFor="let post of post$ | async" rowspan="6">
+    <mat-card>
+        {{ post.title }}
+    </mat-card>
+</mat-grid-tile>
 ```
 
-这里设置 `cols="3"`，`<mat-grid-list>`会自动占满可以使用的宽度，然后平均分成 3 等分（cell）。接着我们可以在里面放置`<mat-grid-tile>`，代表每一个资料呈现的区块，`<mat-grid-list>`会依照 `cols` 的设定，决定每列放置多少个 `<mat-grid-tile>`。
+ ![mat-card-title](assets/mat-card-title.png)
 
- ![mat-grid-list-tile](assets/mat-grid-list-tile.png)
+不过目前可以看到排版有点奇怪，由于 `<mat-grid-tile>` 会把资料都居中，因此卡片的位置也会放在正中间，并随着内容变宽变高，这个问题不难，用 CSS 调整一下：
 
-可以看到每个 `<mat-grid-tile>`所占的宽度为 1/3，因此第 4 个 tile 就会被放置到第 2 列（row）上，一个基本的Grid List 就完成了。
+*src\app\dashboard\blog\blog.component.scss*
 
-### 在 mat-grid-list 中使用 rowHeight 设置每列高度
+```scss
+.post-tile {
+  align-self: flex-start;
+  width: 100%;
+  margin: 5px;
+}
 
-`<mat-grid-list>`会依照 `col` 的设置来**切割cell，此时每个 cell 的宽度会平均**，假设`<mat-grid-list>`占满宽度后是 `300px`，此时每个 cell 的宽度就是 `100px`，同时 `<mat-grid-list>` 也会将高度视为 `100px`，**成为一个正方形**，这么一来**屏幕越宽，每个 cell 的高度就越高**，这样的高度未必是我们想要的，因此我们可以设置 `rowHeight` 来控制高度。
-
-例如，每列高度是 `100px`，可以如下设置：
+```
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-list cols="3" rowHeight="100px">
-  <mat-grid-tile style="background: royalblue;">Tile 1</mat-grid-tile>
-  <mat-grid-tile style="background: teal;">Tile 2</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;">Tile 4</mat-grid-tile>
-</mat-grid-list>
-
+<mat-grid-tile *ngFor="let post of post$ | async" rowspan="6">
+    <mat-card class="post-tile">
+        {{ post.title }}
+    </mat-card>
+</mat-grid-tile>
 ```
 
- ![mat-grid-list-tile-rowHeight](assets/mat-grid-list-tile-rowHeight.png)
+ ![mat-card-post-title](assets/mat-card-post-title.png)
 
-除此之外，我们也可以给予一个比例的字串，来决定宽跟高的比例，这时候高度就会依照目前 tile 的宽度自动去计算：
+### 其他 mat-card 内可用的功能
+
+在 `<mat-card>` 内，有一些内建的 directive，如下：
+
+- `<mat-card-title>`：卡片标题
+- `<mat-card-subtitle>`：卡片子标题
+- `<mat-card-content>`：卡片主要内容，会在四周留下一些空白来放置文字
+- `<img mat-card-image>`：卡片图片，会随着卡片大小自动延展
+- `<mat-card-actions>`：卡片底部用来放置一些执行动作按钮的区块
+- `<mat-card-footer>`：卡片的最底部
+
+这些 directives 可以为卡片内的内容加上一些内建的显示样式，我们直接将这些 directives 加到卡片中：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<!-- rowHeight：宽高比例 -->
-<mat-grid-list cols="3" rowHeight="4:1">
-  <mat-grid-tile style="background: royalblue;">Tile 1</mat-grid-tile>
-  <mat-grid-tile style="background: teal;">Tile 2</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;">Tile 4</mat-grid-tile>
-</mat-grid-list>
+<mat-grid-tile *ngFor="let post of post$ | async" rowspan="6">
+    <mat-card class="post-tile">
+        <mat-card-title>{{ post.title.substring(0, 15) }}...</mat-card-title>
+        <mat-card-subtitle>User Id: {{ post.userId }}</mat-card-subtitle>
+        <img mat-card-avatar src="https://picsum.photos/300/300/?random">
+        <img mat-card-image src="https://picsum.photos/300/300/?random">
+        <mat-card-content>{{ post.body.substring(0, 100) }}...</mat-card-content>
+        <mat-card-actions>
+            <button mat-button color="primary">继续阅读</button>
+            <button mat-button color="accent">编辑</button>
+        </mat-card-actions>
+        <mat-card-footer>Angular Material 系列</mat-card-footer>
+    </mat-card>
+</mat-grid-tile>
 ```
 
- ![mat-grid-list-tile-rowHeight-4.1](assets/mat-grid-list-tile-rowHeight-4.1.png)
+> 使用的图片服务：https://picsum.photos，图片每次都是随机的。
 
-### 使用 rowspan 和 colspan 设置 mat-grid-tile 所占的 cell
+ ![mat-card](assets/mat-card.png)
 
-一个 tile 可以水平和垂直的跨越多个 cell，在 Angular Material 中我们可以设置 `<mat-grid-tile>` 的 `rowspan` 和 `colspan` （默认值都为1）来控制每个 tile 跨越的列和栏。
+这样一张内容丰富的卡片就完成了！
 
-> 很眼熟？没错！就是和 table 的 `rowspan` 和 `colspan` 是一样的概念，只是使用 table 排版是众所周知的罪恶！而 `<mat-grid-list>` 中所使用过的排版系统是 flex，但是排版起来容易理解
-
-下面我们来做一下调整：
-
-首先将原来的 Tile 1 当做广告横幅，因此要横向跨越 2 个 cell（也就是 `colspan`）
+另外针对 `<mat-card-actions>`，我们可以设置 `align` 为 `start`（默认值）或 `end`，来决定按钮的对齐方向。
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<!-- colspan：横向跨越 2 -->
-<mat-grid-list cols="3" rowHeight="4:1">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1</mat-grid-tile>
-  <mat-grid-tile style="background: teal;">Tile 2</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;">Tile 4</mat-grid-tile>
-</mat-grid-list>
+<mat-card-actions align="end">
+    <button mat-button color="primary">继续阅读</button>
+    <button mat-button color="accent">编辑</button>
+</mat-card-actions>
 ```
 
- ![mat-grid-list-tile-colspan](assets/mat-grid-list-tile-colspan.png)
+ ![mat-card-actions](assets/mat-card-actions.png)
 
-此时 Tile 2 就被挤到最右边，正好可以当做是右边的最新文章等等的清单，让他垂直跨越 5 个 cell（也就是 `rowspan`）。
+### 使用 mat-card-header
+
+在上面的卡片有一个看起来奇怪的地方，就是 `<mat-card-title>`、`<mat-card-subtitle>` 和 `<img mat-card-avatar>` 是一列一列显示的。
+
+ ![mat-card-actions](assets/mat-card-title-subtitle-avatar.png)
+
+这有点不符合我们的期待，太占用空间了，这时候我们可以使用 `<mat-card-header>` 这个组件把上述 directives 包起来：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<!-- colspan：横向跨越 2 -->
-<!-- rowspan：纵向跨越 5 -->
-<mat-grid-list cols="3" rowHeight="4:1">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;">Tile 4</mat-grid-tile>
-</mat-grid-list>
+<mat-card-header>
+    <mat-card-title>{{ post.title.substring(0, 15) }}...</mat-card-title>
+    <mat-card-subtitle>User Id: {{ post.userId }}</mat-card-subtitle>
+    <img mat-card-avatar src="https://picsum.photos/300/300/?random">
+</mat-card-header>
 ```
 
- ![mat-grid-list-tile-rowspan](assets/mat-grid-list-tile-rowspan.png)
+ ![mat-card-header](assets/mat-card-header.png)
 
-接着我们先看 Tile 4，一样希望他是一个在最下面的横幅广告，因此让他跨越 2个 cell，程序代码如 Tile 1的设置：
+### 调整 mat-card-image 显示方式
+
+关于 `mat-card-image`，由于图片默认以**正方形呈现**，且随着卡片大小自动延伸，但是 `<mat-grid-tile>`高度是固定的，这时候可能反而会因为图片太大而造成卡片下方的资料无法完整显示。
+
+如果有显示完整资料，不介意图片形状被改变的话，可以通过设置 CSS 来固定图片的高度，例如：
+
+*src\app\dashboard\blog\blog.component.scss*
+
+```scss
+.post-tile {
+  align-self: flex-start;
+  width: 100%;
+  margin: 5px;
+
+  .mat-card-image {
+    max-height: 300px;
+  }
+}
+
+```
+
+所有 `<mat-card>` 的 directive 加入后都会自动加入一个名称相同的 class。
+
+> 实际上所有的 Angular Material 组件都会这样，方便自定义样式
+
+因此 `<img mat-card-image>` 在显示时实际上会是 `<img mat-card-image class="mat-card-image">`。
+
+ ![mat-tile-class](assets/mat-tile-class.png)
+
+### 使用 mat-card-title-group
+
+刚刚使用了 `<mat-card-header>` 来组合 `<mat-card-title>`、`<mat-card-subtitle>` 和 `<img mat-card-avatar>`，而 `<img mat-card-avatar>` 主要是用来放置使用者的头像，在 Material Design 中对于卡片还有另外一种显示方式，是把缩略图放在标题的右边，如下图：
+
+ ![card-title-sample](assets/card-title-sample.png)
+
+这个功能我们可以使用 `<mat-card-title-group>` 来实现，`<mat-card-title-group>`可以组合以下 directive：
+
+- `<mat-card-title>`
+- `<mat-card-subtitle>`
+- 以下其中一个
+  - `<img mat-card-sm-image>`：80 x 80
+  - `<img mat-card-md-image>`：112 x 112
+  - `<img mat-card-lg-image>`：152 x 152
+
+我们可以试试把预期放置顶文章的部分，用这种方式显示资料：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-list cols="3" rowHeight="4:1">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;">Tile 3</mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4</mat-grid-tile>
-</mat-grid-list>
+<mat-grid-tile rowspan="2">
+    <mat-card class="post-tile">
+        <mat-card-title-group>
+            <mat-card-title>置顶文章 1</mat-card-title>
+            <mat-card-subtitle>2020/01/04</mat-card-subtitle>
+            <img mat-card-sm-image src="https://picsum.photos/300/300/?random">
+        </mat-card-title-group>
+        <mat-card-content>
+            文章内容 1...
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button color="primary">继续阅读</button>
+        </mat-card-actions>
+    </mat-card>
+</mat-grid-tile>
 ```
 
- ![mat-grid-list-tile-colspan-tile4](assets/mat-grid-list-tile-colspan-tile4.png)
+ ![mat-card-title-group](assets/mat-card-title-group.png)
 
-由于 Tile 2 垂直跨越 5 个 cell 的关系，导致第 2 列只剩下 2 个 cell 可以用，而原来的 Tile 3 已经占用 1 个 cell，所以占用 2 个 cell 的 Tile 2 无法放在 Tile 3 旁边，就被推到下方去了。
+设置 tabindex 让卡片可以 focus
 
-接着我们测试看看，在第二列只剩下 2 个 cell 可以用的情况下，设置 `colspan="3"` 会有什么结果：
+`<mat-card>`是可以被 focus 的，我们只要设置好它的 `tabindex` 即可，通过这种设置我们可以让卡片跟清单一样，拥有**被选择**的功能：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-list cols="3" rowHeight="4:1">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;" colspan="3">Tile 3</mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4</mat-grid-tile>
-</mat-grid-list>
+<mat-grid-tile *ngFor="let post of post$ | async; let index = index" rowspan="6">
+    <mat-card class="post-tile" [tabindex]="index">
+        ...
+    </mat-card>
+</mat-grid-tile>
 ```
 
- ![mat-grid-list-tile-colspan-tile3](assets/mat-grid-list-tile-colspan-tile3.png)
+*src\app\dashboard\blog\blog.component.scss*
 
-如果设置 `colspan="4"` 使其超过原来的 `cols="3"` 的设置呢？
-
-![Error-mat-grid-list](assets/Error-mat-grid-list-1583734850989.png)
-
-结果是一片空白，然后跳出错误信息！
-
-测试到此结束，让我们认真的设置 Tile 3，我们希望 Tile 3用来放置接下来部落格列表的资讯，我们可以合并使用 `colspan` 和 `rowspan` 填满剩下的空间！
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<mat-grid-list cols="3" rowHeight="4:1">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">
-      Tile 3（文章内容区）
-  </mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4（下方横幅广告）</mat-grid-tile>
-</mat-grid-list>
+```scss
+mat-card:focus {
+  background: antiquewhite;
+}
 ```
 
- ![mat-grid-list-tile-colspan-rowspan-final](assets/mat-grid-list-tile-colspan-rowspan-final.png)
+ ![tabindex](assets/tabindex.png)
 
-### 使用 gutterSize 调整 cell 的间距
-
-我们可以在 `<mat-grid-list>` 中使用 `gutterSize` 来调整每个 cell 之间的间距，可以使用 `px`、`em` 或 `rem`为单位。
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-![mat-grid-list-tile-gutterSize](C:/Users/Administrator/Desktop/mat-grid-list-tile-gutterSize.png<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">
-      Tile 3（文章内容区）
-  </mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;" colspan="2">Tile 4（下方横幅广告）</mat-grid-tile>
-</mat-grid-list>
-```
-
-![mat-grid-list-tile-gutterSize](assets/mat-grid-list-tile-gutterSize.png)
-
-### 为 mat-grid-tile 加上 header 与 footer
-
-在每个 tile 内，我们可以使用 `<mat-grid-tile-header>` 和 `<mat-grid-tile-footer>`，为我们的 `<mat-grid-tile>` 加上 header 跟 footer：
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
-  ...
-  <mat-grid-tile style="background: teal;" rowspan="5">
-
-    <mat-grid-tile-header>
-      <h3 mat-line>功能清单</h3>
-      <span mat-line>选择你要的</span>
-      <mat-icon>list</mat-icon>
-    </mat-grid-tile-header>
-
-    <mat-grid-tile-footer>
-      <span mat-line>Angular</span>
-      <span mat-line>Vue</span>
-      <span mat-line>React</span>
-      <mat-icon>thumb_up</mat-icon>
-    </mat-grid-tile-footer>
-    Tile 2（右边清单讯息）
-  </mat-grid-tile>
-  ...
-</mat-grid-list>
-```
-
- ![mat-grid-list-tile-header-footer](assets/mat-grid-list-tile-header-footer.png)
+可以看到被 focus 的 `<mat-card>` 不仅拥有浏览器内建被选择的提示框，还可以直接使用 `:focus` 的 css.selector 来设置它的样式。

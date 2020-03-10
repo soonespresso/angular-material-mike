@@ -20,7 +20,8 @@ import {
   MatRadioModule,
   MatSlideToggleModule,
   MatSliderModule,
-  MatGridListModule
+  MatGridListModule,
+  MatCardModule
 } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
@@ -39,6 +40,7 @@ export const MY_FORMATS = {
 
 @NgModule({
   exports: [
+    MatCardModule,
     MatGridListModule,
     MatSliderModule,
     MatSlideToggleModule,
