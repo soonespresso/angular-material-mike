@@ -195,7 +195,7 @@ export class SharedMaterialModule {}
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-![mat-grid-list-tile-gutterSize](C:/Users/Administrator/Desktop/mat-grid-list-tile-gutterSize.png<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
+<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
   <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
   <mat-grid-tile style="background: teal;" rowspan="5">Tile 2（右边清单咨询）</mat-grid-tile>
   <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">
