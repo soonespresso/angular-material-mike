@@ -10,6 +10,10 @@ import { map } from 'rxjs/operators';
 })
 export class BlogComponent implements OnInit {
 
+  progress = 85;
+  strokeWidth = 1;
+  diameter = 100;
+
   post$: Observable<any>;
 
   constructor(private httpClient: HttpClient) { }

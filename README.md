@@ -1,321 +1,358 @@
-# 设计一个部落格 - Card
+# 设计一个部落格 - Progress Bar、Progress Spinner
 
-今天我们要介绍一个 Material Design 中被使用频率非常高，且很经典的组件 —— Card。利用 Card 来当做部落格列表的呈现方式。
+今天我们来介绍两个跟**显示进度**有关系的组件，分别是 Progress Bar 和 Progress Spinner，尽管这两个组件相对简单很多，但在 SPA 架构下，这两个组件可以说是非常核心的功能。
 
-## 关于 Material Design 中的 Card
+## 关于 Material Design 中的 Progress Bar 和 Progress Spinner
 
-在[Material Design 的 Cards 设计指南](https://material.io/components/cards/#)中，Card 是用来针对某一**主题**放置图片、文字或链接的地方，它能够把这些图片、文字或链接都整合到一个卡片之中，而这个卡片就代表了我们的目标主题。
+Progress Bar 和 Progress Spinner 被归纳在 [Material Design 的 Progress & activity 设计指南](https://material.io/components/progress-indicators/#)中，主要是用来提示使用者**内容正在读取中**，依照显示的位置不同，可以使用：
 
-由于 Card 是 Material Design 中最主要的资料显示方式，因此里面的资料呈现也有很多不同丰富的变化，建议可以直接进去说明文档里看，会对于 Card 的呈现方式更加的有感觉。
+- 长条的显示（Progress Bar）
+- 圆形的显示（Progress Spinner）
 
-## 开始使用 Angular Material 的 Card
+适合使用在读取（或重新整理）的资料时，告知使用者内容正在读取中。
 
-### 调整一下 Grid List
+依照使用场景不同，我们也能选择让使用者知道：
 
-我们先将原来的 Grid List 排版做点调整，预期结果如下：
+- 目前确定的进行（Determinate indicators）
+- 显示不确定的进度（indeterminate indicators）
 
-![mat-card-final](assets/mat-card-final.png)
+ ![00-components-progress-and-activity](assets/00-components-progress-and-activity.png)
 
-在主要的文章清单中，最上方位有 2个*置顶文章*，而下面会显示 6 篇*清单文章*，每篇宽度占 1格cell。
-高度在规划后，*置顶文章* 需要占掉 2格cell，*清单文章* 需要占掉 6格cell。
-6篇 *清单文章* 共 3列，就会用掉 18格cell的高度，加上 *置顶文章* 的 2格，共 20格cell的高度。
-另外加上 *上下横幅* 各1格，加起来**总共会用 22格cell的高度**。
-因此原来放置右边菜单的 Tile2 该高度会重新设置为 `rowspan="22"`。
+## 开始使用 Angular Material 的 Progress Bar
 
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<mat-grid-list cols="3" rowHeight="100px" gutterSize="20px">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  
-  <mat-grid-tile style="background: teal;" rowspan="22">
-    <mat-grid-tile-header>...</mat-grid-tile-header>
-    <mat-grid-tile-footer>...</mat-grid-tile-footer>
-    Tile 2（右边清单讯息）
-  </mat-grid-tile>
-
-  <mat-grid-tile style="background: slateblue;" colspan="2" rowspan="3">
-    Tile 3（文章内容区）
-  </mat-grid-tile>
-  <mat-grid-tile style="background: seagreen;" colspan="2">
-    Tile 4（下方横幅广告）
-  </mat-grid-tile>
-</mat-grid-list>
-```
-
-另外，我们将 Tile 3 当做整个放文章的容器，但目前 `<mat-grid-list>` 是没办法直接巢状使用的，也就是在 `<mat-grid-list>` 中，我们无法加上 `<mat-grid-list> `的，虽然不会出错，但也不会显示内容（实际上跑掉了），比较简单的方式就是重新规划好 `cols` 及 `rowHeight`，每个 Tile 里面就直接放置内容就好。
-
-另外，拿掉 `gutterSize`，以免影响内容显示，调整后的程序大致如下：
-
-*src\app\dashboard\blog\blog.component.ts*
-
-```typescript
-export class BlogComponent implements OnInit {
-
-  post$: Observable<any>;
-
-  constructor(private httpClient: HttpClient) { }
-
-  ngOnInit() {
-    this.post$ = this.httpClient.get<any[]>('https://jsonplaceholder.typicode.com/posts')
-        .pipe(map(post => {
-	      return post.slice(0, 6);
-    	})
-    );
-  }
-}
-```
-
-> 资料来源：https://jsonplaceholder.typicode.com/guide.html
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<mat-grid-list cols="3" rowHeight="100px">
-  <mat-grid-tile style="background: royalblue;" colspan="2">Tile 1（横幅广告）</mat-grid-tile>
-  <mat-grid-tile style="background: teal;" rowspan="22">
-
-    <mat-grid-tile-header>...</mat-grid-tile-header>
-
-    <mat-grid-tile-footer>...</mat-grid-tile-footer>
-    Tile 2（右边清单讯息）
-  </mat-grid-tile>
-
-  <mat-grid-tile style="background: slateblue;" rowspan="2">
-    置顶文章 1
-  </mat-grid-tile>
-  <mat-grid-tile style="background: slateblue;" rowspan="2">
-    置顶文章 2
-  </mat-grid-tile>
-
-  <mat-grid-tile style="background: slateblue;" *ngFor="let post of post$ | async" rowspan="6">
-    {{ post.title }}
-  </mat-grid-tile>
-
-  <mat-grid-tile style="background: seagreen;" colspan="2">
-    Tile 4（下方横幅广告）
-  </mat-grid-tile>
-</mat-grid-list>
-```
-
- ![mat-card-tile3](assets/mat-card-tile3.png)
-
-接下来在加入 `MatCardModule` 之后，我们就正式开始用 Card 组件来填满我们的 tile 吧！
+先从 Progress Bar 开始学习，加人 `MatProgressBarModule` 后，开始使用 Progress Bar 的相关功能。
 
 *src\app\shared-material\shared-material.module.ts*
 
 ```typescript
 @NgModule({
   exports: [
-    MatCardModule,
+    MatProgressBarModule,
     ...
   ]
 })
 export class SharedMaterialModule {...}
 ```
 
-### 使用 mat-card 建立卡片
+### 使用 mat-progress-bar
 
-我们可以使用 `<mat-card>` 立刻建立一个简单的卡片，如下：
+在部落格旁边栏部分，放一个简单的 Progress Bar 看看，只需要加入 `<mat-progress-bar>` 就好。
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-![mat-card-title](C:/Users/Administrator/Desktop/mat-card-title.png<mat-grid-tile *ngFor="let post of post$ | async" rowspan="6">
-    <mat-card>
-        {{ post.title }}
-    </mat-card>
+<mat-grid-tile rowspan="22">
+
+    <mat-grid-tile-header>
+        ...
+    </mat-grid-tile-header>
+
+    <mat-grid-tile-footer>
+        ...
+    </mat-grid-tile-footer>
+
+    <!-- progress：Tile 2（右边清单讯息） -->
+    <div class="blog-sidebard-content">
+        <h4>发文推进</h4>
+        <mat-progress-bar></mat-progress-bar>
+    </div>
 </mat-grid-tile>
 ```
-
- ![mat-card-title](assets/mat-card-title.png)
-
-不过目前可以看到排版有点奇怪，由于 `<mat-grid-tile>` 会把资料都居中，因此卡片的位置也会放在正中间，并随着内容变宽变高，这个问题不难，用 CSS 调整一下：
 
 *src\app\dashboard\blog\blog.component.scss*
 
 ```scss
-.post-tile {
+.blog-sidebard-content {
   align-self: flex-start;
-  width: 100%;
-  margin: 5px;
+  padding-top: 100px;
+  width: 95%;
 }
 
 ```
 
-*src\app\dashboard\blog\blog.component.html*
+ ![mat-progress-bar](assets/mat-progress-bar.png)
 
-```html
-<mat-grid-tile *ngFor="let post of post$ | async" rowspan="6">
-    <mat-card class="post-tile">
-        {{ post.title }}
-    </mat-card>
-</mat-grid-tile>
-```
-
- ![mat-card-post-title](assets/mat-card-post-title.png)
-
-### 其他 mat-card 内可用的功能
-
-在 `<mat-card>` 内，有一些内建的 directive，如下：
-
-- `<mat-card-title>`：卡片标题
-- `<mat-card-subtitle>`：卡片子标题
-- `<mat-card-content>`：卡片主要内容，会在四周留下一些空白来放置文字
-- `<img mat-card-image>`：卡片图片，会随着卡片大小自动延展
-- `<mat-card-actions>`：卡片底部用来放置一些执行动作按钮的区块
-- `<mat-card-footer>`：卡片的最底部
-
-这些 directives 可以为卡片内的内容加上一些内建的显示样式，我们直接将这些 directives 加到卡片中：
+要显示进度，只需要设置 `value` 属性即可，这里没有 `min`、`max` 等属性可以设置，默认值就是 0 ~ 100，低于或超过都不会影响呈现的变化：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-tile *ngFor="let post of post$ | async" rowspan="6">
-    <mat-card class="post-tile">
-        <mat-card-title>{{ post.title.substring(0, 15) }}...</mat-card-title>
-        <mat-card-subtitle>User Id: {{ post.userId }}</mat-card-subtitle>
-        <img mat-card-avatar src="https://picsum.photos/300/300/?random">
-        <img mat-card-image src="https://picsum.photos/300/300/?random">
-        <mat-card-content>{{ post.body.substring(0, 100) }}...</mat-card-content>
-        <mat-card-actions>
-            <button mat-button color="primary">继续阅读</button>
-            <button mat-button color="accent">编辑</button>
-        </mat-card-actions>
-        <mat-card-footer>Angular Material 系列</mat-card-footer>
-    </mat-card>
-</mat-grid-tile>
+<div class="blog-sidebard-content">
+    <h4>发文推进</h4>
+    <mat-progress-bar value="85"></mat-progress-bar>
+</div>
 ```
 
-> 使用的图片服务：https://picsum.photos，图片每次都是随机的。
+ ![mat-progress-bar-value](assets/mat-progress-bar-value.png)
 
- ![mat-card](assets/mat-card.png)
+当数字在变化时，还能够看到动画效果：
 
-这样一张内容丰富的卡片就完成了！
+*src\app\dashboard\blog\blog.component.ts*
 
-另外针对 `<mat-card-actions>`，我们可以设置 `align` 为 `start`（默认值）或 `end`，来决定按钮的对齐方向。
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<mat-card-actions align="end">
-    <button mat-button color="primary">继续阅读</button>
-    <button mat-button color="accent">编辑</button>
-</mat-card-actions>
-```
-
- ![mat-card-actions](assets/mat-card-actions.png)
-
-### 使用 mat-card-header
-
-在上面的卡片有一个看起来奇怪的地方，就是 `<mat-card-title>`、`<mat-card-subtitle>` 和 `<img mat-card-avatar>` 是一列一列显示的。
-
- ![mat-card-actions](assets/mat-card-title-subtitle-avatar.png)
-
-这有点不符合我们的期待，太占用空间了，这时候我们可以使用 `<mat-card-header>` 这个组件把上述 directives 包起来：
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<mat-card-header>
-    <mat-card-title>{{ post.title.substring(0, 15) }}...</mat-card-title>
-    <mat-card-subtitle>User Id: {{ post.userId }}</mat-card-subtitle>
-    <img mat-card-avatar src="https://picsum.photos/300/300/?random">
-</mat-card-header>
-```
-
- ![mat-card-header](assets/mat-card-header.png)
-
-### 调整 mat-card-image 显示方式
-
-关于 `mat-card-image`，由于图片默认以**正方形呈现**，且随着卡片大小自动延伸，但是 `<mat-grid-tile>`高度是固定的，这时候可能反而会因为图片太大而造成卡片下方的资料无法完整显示。
-
-如果有显示完整资料，不介意图片形状被改变的话，可以通过设置 CSS 来固定图片的高度，例如：
-
-*src\app\dashboard\blog\blog.component.scss*
-
-```scss
-.post-tile {
-  align-self: flex-start;
-  width: 100%;
-  margin: 5px;
-
-  .mat-card-image {
-    max-height: 300px;
-  }
+```typescript
+export class BlogComponent implements OnInit {
+  progress = 85;
 }
-
 ```
-
-所有 `<mat-card>` 的 directive 加入后都会自动加入一个名称相同的 class。
-
-> 实际上所有的 Angular Material 组件都会这样，方便自定义样式
-
-因此 `<img mat-card-image>` 在显示时实际上会是 `<img mat-card-image class="mat-card-image">`。
-
- ![mat-tile-class](assets/mat-tile-class.png)
-
-### 使用 mat-card-title-group
-
-刚刚使用了 `<mat-card-header>` 来组合 `<mat-card-title>`、`<mat-card-subtitle>` 和 `<img mat-card-avatar>`，而 `<img mat-card-avatar>` 主要是用来放置使用者的头像，在 Material Design 中对于卡片还有另外一种显示方式，是把缩略图放在标题的右边，如下图：
-
- ![card-title-sample](assets/card-title-sample.png)
-
-这个功能我们可以使用 `<mat-card-title-group>` 来实现，`<mat-card-title-group>`可以组合以下 directive：
-
-- `<mat-card-title>`
-- `<mat-card-subtitle>`
-- 以下其中一个
-  - `<img mat-card-sm-image>`：80 x 80
-  - `<img mat-card-md-image>`：112 x 112
-  - `<img mat-card-lg-image>`：152 x 152
-
-我们可以试试把预期放置顶文章的部分，用这种方式显示资料：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-tile rowspan="2">
-    <mat-card class="post-tile">
-        <mat-card-title-group>
-            <mat-card-title>置顶文章 1</mat-card-title>
-            <mat-card-subtitle>2020/01/04</mat-card-subtitle>
-            <img mat-card-sm-image src="https://picsum.photos/300/300/?random">
-        </mat-card-title-group>
-        <mat-card-content>
-            文章内容 1...
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button color="primary">继续阅读</button>
-        </mat-card-actions>
-    </mat-card>
-</mat-grid-tile>
+<div class="blog-sidebard-content">
+    <h4>发文推进</h4>
+    <mat-progress-bar [value]="progress"></mat-progress-bar>
+    <button mat-raised-button (click)="progress = progress - 10">-10</button>
+    <button mat-raised-button (click)="progress = progress + 10">+10</button>
+</div>
 ```
 
- ![mat-card-title-group](assets/mat-card-title-group.png)
+ ![mat-progress-bar-+=](assets/mat-progress-bar-+=.gif)
 
-设置 tabindex 让卡片可以 focus
+### 调整 mat-progess-bar 的模式
 
-`<mat-card>`是可以被 focus 的，我们只要设置好它的 `tabindex` 即可，通过这种设置我们可以让卡片跟清单一样，拥有**被选择**的功能：
+`<mat-progress-bar>` 有一个属性 `mode`，具有 4 种模式，分别代表不同的显示方式：
+
+- **determinate**：默认值，依照 `value` 属性决定进度。
+
+- **buffer**：除了原来的 `value` 以外还可以设置 `bufferValue` 属性，会在 `value` 和 `bufferValue` 之间多一块缓冲区，而空白的部分则会变成另一种效果的显示方式。
+
+  *src\app\dashboard\blog\blog.component.html*
+
+  ```html
+  <h4>Buffer Progress Bar</h4>
+  <mat-progress-bar mode="buffer" value="30" bufferValue="60"></mat-progress-bar>
+  ```
+
+   ![mat-progress-bar-buffer](assets/mat-progress-bar-buffer.gif)
+
+- **indeterminate**：代表不确定的进度，`value` 和 `bufferValue` 属性都不能使用，使用于进行等待的时候。
+
+  *src\app\dashboard\blog\blog.component.html*
+
+  ```html
+  <h4>Indeterminate Progress Bar</h4>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  ```
+
+   ![mat-progress-bar-indeterminate](assets/mat-progress-bar-indeterminate.gif)
+
+- **query**：和 indeterminate 一样，但进度的方向刚好相反，适合在 loading 之前的前置准备时使用，要进入 loading 时再调整成 `indeterminate `
+
+  *src\app\dashboard\blog\blog.component.html*
+
+  ```html
+  <h4>Query Progress Bar</h4>
+  <mat-progress-bar mode="query"></mat-progress-bar>
+  ```
+
+   ![mat-progress-bar-query](assets/mat-progress-bar-query.gif)
+
+### 调整 Progress bar 的颜色
+
+老规矩，只需要设置 `color` 为 `primary`、`accent` 和 `warn` 即可切换颜色。
+
+```html
+<h4>Primary</h4>
+<mat-progress-bar mode="buffer" color="primary"></mat-progress-bar>
+
+<h4>Accent</h4>
+<mat-progress-bar mode="buffer" color="accent"></mat-progress-bar>
+
+<h4>Warn</h4>
+<mat-progress-bar mode="buffer" color="warn"></mat-progress-bar>
+```
+
+ ![mat-progress-bar-color](assets/mat-progress-bar-color.gif)
+
+### 应用
+
+由于是扁长型的显示方式，因此放在一些独立显示的组件，如 Card 下可以说是非常适合：
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-tile *ngFor="let post of post$ | async; let index = index" rowspan="6">
+![mat-card-footer-progress-bar](C:/Users/Administrator/Documents/Honeycam/mat-card-footer-progress-bar.gif<mat-grid-tile *ngFor="let post of post$ | async; let index = index" rowspan="6">
     <mat-card class="post-tile" [tabindex]="index">
         ...
+        <mat-card-footer>
+            Angular Material 系列
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </mat-card-footer>
     </mat-card>
 </mat-grid-tile>
 ```
 
-*src\app\dashboard\blog\blog.component.scss*
+ ![mat-card-footer-progress-bar](assets/mat-card-footer-progress-bar.gif)
 
-```scss
-mat-card:focus {
-  background: antiquewhite;
+## 开始使用 Angular Material 的 Progress Spinner
+
+Progress Spinner 基本上概念跟 Progress Bar 大同小异，只是从直条显示变成圆形而已，加入 `MatProgressSpinnerModule` 后，直接使用 `<mat-progress-spinner>` 即可：
+
+*src\app\shared-material\shared-material.module.ts*
+
+```typescript
+@NgModule({
+  exports: [
+    MatProgressSpinnerModule,
+    ...
+  ]
+})
+export class SharedMaterialModule {...}
+```
+
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<h4>Progress Spinner</h4>
+<mat-progress-spinner [value]="progress"></mat-progress-spinner>
+<button mat-raised-button (click)="progress = progress - 10">-10</button>
+<button mat-raised-button (click)="progress = progress + 10">+10</button>
+```
+
+ ![mat-progress-spinner](assets/mat-progress-spinner.gif)
+
+### 设置 mat-progress-spinner 的模式
+
+`<mat-progress-spinner>` 的 `mode` 只有两个：
+
+- **determine**：默认值，会通过 `value` 决定进度显示。
+
+- **indeterminate**：代表进度不确定，会忽略 `value` 的设置。
+
+  *src\app\dashboard\blog\blog.component.html*
+
+  ```html
+  <h4>Indeterminate Progress Spinner</h4>
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  ```
+
+   ![mat-progress-spinner-indeterminate](assets/mat-progress-spinner-indeterminate.gif)
+
+### 设置 mat-progress-spinner 的线条粗细
+
+`<mat-progress-spinner>` 还有一个 `strokeWith` 属性，我们可以通过这个属性来调整它的线条宽度
+
+*src\app\dashboard\blog\blog.component.ts*
+
+```typescript
+export class BlogComponent implements OnInit {
+  strokeWidth = 1;
 }
 ```
 
- ![tabindex](assets/tabindex.png)
 
-可以看到被 focus 的 `<mat-card>` 不仅拥有浏览器内建被选择的提示框，还可以直接使用 `:focus` 的 css.selector 来设置它的样式。
+
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<h4>Spinner Stroke Width</h4>
+<mat-progress-spinner value="60" [strokeWidth]="strokeWidth"></mat-progress-spinner>
+<button mat-raised-button (click)="strokeWidth = strokeWidth - 1">-1</button>
+{{ strokeWidth }}
+<button mat-raised-button (click)="strokeWidth = strokeWidth + 1">+1</button>
+```
+
+ ![mat-progress-spinner-strokeWidth](assets/mat-progress-spinner-strokeWidth.gif)
+
+### 设置 mat-progress-spinner 的直径大小
+
+除了线条宽度以外，通过 `diameter` 属性，我们也能调整圆圈的直径大小：
+
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<h4>Spinner Stroke Width</h4>
+<mat-progress-spinner value="60" [diameter]="diameter"></mat-progress-spinner>
+<button mat-raised-button (click)="diameter = diameter - 10">-10</button>
+{{ diameter }}
+<button mat-raised-button (click)="diameter = diameter + 10">+10</button>
+```
+
+ ![mat-progress-spinner-diameter](assets/mat-progress-spinner-diameter.gif)
+
+### 使用 mat-spinner
+
+因为 `indeterminate` 模式在 spinner 实在太常用了，因此还有一个 `<mat-spinner>` 可以使用。
+
+`<mat-spinner>` 可以想象成是 `<mat-progress-spinner mode="indeterminate">` 的缩写，因此不能额外设置 `mode` 和 `value`，不过 `strokeWidth` 和 `diameter` 依然也都可以设置：
+
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<h4>Very Small Spinner</h4>
+<mat-spinner [diameter]="50" [strokeWidth]="5"></mat-spinner>
+```
+
+ ![mat-spinner](assets/mat-spinner.gif)
+
+### 应用
+
+Progress Spinner 由于体积较大的关系，通常会放置在预期有内容，但目前还没有显示的地方， 等到内容产生后再将其隐藏，例如我们可以在部落格文章读取完之前，先放上一个 Progress Spinner：
+
+*src\app\dashboard\blog\blog.component.html*
+
+```html
+<!-- 置顶文章 loading -->
+<ng-template #loading>
+    <mat-grid-tile colspan="2">
+        <mat-spinner></mat-spinner>
+    </mat-grid-tile>
+</ng-template>
+
+<ng-container *ngIf="post$ | async as post; else loading">
+    <!-- 置顶文章 -->
+    <mat-grid-tile rowspan="2">
+        <mat-card class="post-tile">
+            <mat-card-title-group>
+                <mat-card-title>置顶文章 1</mat-card-title>
+                <mat-card-subtitle>2020/01/04</mat-card-subtitle>
+                <img mat-card-sm-image src="https://picsum.photos/300/300/?random">
+            </mat-card-title-group>
+            <mat-card-content>
+                文章内容 1...
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button color="primary">继续阅读</button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="2">
+        <mat-card class="post-tile">
+            <mat-card-title-group>
+                <mat-card-title>置顶文章 2</mat-card-title>
+                <mat-card-subtitle>2020/02/04</mat-card-subtitle>
+                <img mat-card-sm-image src="https://picsum.photos/300/300/?random">
+            </mat-card-title-group>
+            <mat-card-content>
+                文章内容 2...
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button color="primary">继续阅读</button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-grid-tile>
+
+    <!-- 清单文章 -->
+    <mat-grid-tile *ngFor="let post of post$ | async; let index = index" rowspan="6">
+        <mat-card class="post-tile" [tabindex]="index">
+            <mat-card-header>
+                <mat-card-title>{{ post.title.substring(0, 15) }}...</mat-card-title>
+                <mat-card-subtitle>User Id: {{ post.userId }}</mat-card-subtitle>
+                <img mat-card-avatar src="https://picsum.photos/300/300/?random">
+            </mat-card-header>
+            <img mat-card-image src="https://picsum.photos/300/300/?random">
+            <mat-card-content>{{ post.body.substring(0, 100) }}...</mat-card-content>
+            <mat-card-actions align="end">
+                <button mat-button color="primary">继续阅读</button>
+                <button mat-button color="accent">编辑</button>
+            </mat-card-actions>
+            <mat-card-footer>
+                Angular Material 系列
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </mat-card-footer>
+        </mat-card>
+    </mat-grid-tile>
+</ng-container>
+```
+
+ ![mat-spinner-before-load-content](assets/mat-spinner-before-load-content.gif)
