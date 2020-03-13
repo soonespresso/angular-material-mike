@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>新增文章</h2>
+
+<mat-dialog-content class="post-form">
+  <mat-form-field>
+    <input matInput placeholder="标题" [(ngModel)]="title">
+  </mat-form-field>
+  <mat-form-field>
+    <textarea matInput placeholder="文章内容" rows="3"></textarea>
+  </mat-form-field>
+  <p *ngFor="let item of list; let i = index">条款{{ item | number: '2.0-0' }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button color="primary" (click)="doPost()">发表</button>
+  <button mat-button color="primary" (click)="move()">移动位置</button>
+  <button mat-button color="warn" mat-dialog-close>取消</button>
+</mat-dialog-actions>

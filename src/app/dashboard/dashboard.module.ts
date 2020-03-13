@@ -7,10 +7,13 @@ import { SharedMaterialModule } from '../shared-material/shared-material.module'
 import { SurveyComponent } from './survey/survey.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BlogComponent } from './blog/blog.component';
+import { AddPostDialogComponent } from './blog/add-post-dialog/add-post-dialog.component';
+import { AddPostConfirmDialogComponent } from './blog/add-post-confirm-dialog/add-post-confirm-dialog.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, SurveyComponent, BlogComponent],
+  entryComponents: [AddPostDialogComponent, AddPostConfirmDialogComponent],
+  declarations: [DashboardComponent, SurveyComponent, BlogComponent, AddPostDialogComponent, AddPostConfirmDialogComponent],
   imports: [
     CommonModule,
     FormsModule,

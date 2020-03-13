@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>
+  确认新增
+</h2>
+
+<mat-dialog-content>
+  确定要新增这篇文章？<br>
+  （标题：{{ title }}）
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button color="primary" (click)="confirm()">确认</button>
+  <button mat-button color="warn" mat-dialog-close>取消</button>
+</mat-dialog-actions>

@@ -1,358 +1,539 @@
-# 设计一个部落格 - Progress Bar、Progress Spinner
+# 设计一个部落格 - Dialog
 
-今天我们来介绍两个跟**显示进度**有关系的组件，分别是 Progress Bar 和 Progress Spinner，尽管这两个组件相对简单很多，但在 SPA 架构下，这两个组件可以说是非常核心的功能。
+来介绍一下写程序多于写 HTML 的 Dialog，不管在不在 SPA 架构，Dialog 都是经典且极为重要的组件。
 
-## 关于 Material Design 中的 Progress Bar 和 Progress Spinner
+## 关于 Material Design 中的 Dialog
 
-Progress Bar 和 Progress Spinner 被归纳在 [Material Design 的 Progress & activity 设计指南](https://material.io/components/progress-indicators/#)中，主要是用来提示使用者**内容正在读取中**，依照显示的位置不同，可以使用：
+在 [Material Design 的 Dialogs 设计指南](https://material.io/components/dialogs/)中，Dialog 的作用是用来提醒使用者需要进行的一些特定工作，同时可能包含了重要的提示信息，或是需要做一些决定等等。因此我们会有非常多机会在里面放是 表单组件、或是特性信息等等。
 
-- 长条的显示（Progress Bar）
-- 圆形的显示（Progress Spinner）
+Dialog 的主要几个常见用途如下：
 
-适合使用在读取（或重新整理）的资料时，告知使用者内容正在读取中。
+- **产生提示**：用来立即中断使用者目前的行为，并告知使用者目前的状态或所需要知道的信息等。
+- **简易的选择**：提供一些基本选项让使用者选取。
+- **确认用**：需要使用者明确的进行一个确认性的选择。
 
-依照使用场景不同，我们也能选择让使用者知道：
+Dialog 是很基础的组件，可以说是让页面呈现变得更加立体的关键，例如：以前介绍的 Datepicker、Select、Menu 等等，都是 Dialog 的一种应用结果。
 
-- 目前确定的进行（Determinate indicators）
-- 显示不确定的进度（indeterminate indicators）
+## 开始使用 Angular Material 的 Dialog
 
- ![00-components-progress-and-activity](assets/00-components-progress-and-activity.png)
-
-## 开始使用 Angular Material 的 Progress Bar
-
-先从 Progress Bar 开始学习，加人 `MatProgressBarModule` 后，开始使用 Progress Bar 的相关功能。
+要使用 Dialog，当然需要加入 `MatDialogModule`。
 
 *src\app\shared-material\shared-material.module.ts*
 
 ```typescript
 @NgModule({
   exports: [
-    MatProgressBarModule,
+    MatDialogModule,
     ...
   ]
 })
 export class SharedMaterialModule {...}
 ```
 
-### 使用 mat-progress-bar
+### 先让一个 Dialog 可以显示吧！
 
-在部落格旁边栏部分，放一个简单的 Progress Bar 看看，只需要加入 `<mat-progress-bar>` 就好。
+Dialog 不像是其他 Angular Material 组件，只要单纯的使用即可，需要一些比较复杂的动作，但也不是多困难，让我们一步一步来说明：
+
+新建组件 `AddPostDialogComponent`；
+
+```sh
+ng g c dashboard/blog/add-post-dialog
+```
+
+添加一个按钮，显示 Dialog；
+在对应 component.ts 中，注入 `MatDialog` 这个 Service；
+使用这个 `MatDialog` 对象，打开 Dialog；
 
 *src\app\dashboard\blog\blog.component.html*
 
 ```html
-<mat-grid-tile rowspan="22">
+<!-- open dialog -->
+<button mat-raised-button color="primary" (click)="showAddPostDialog()">新增文章</button>
 
-    <mat-grid-tile-header>
-        ...
-    </mat-grid-tile-header>
-
-    <mat-grid-tile-footer>
-        ...
-    </mat-grid-tile-footer>
-
-    <!-- progress：Tile 2（右边清单讯息） -->
-    <div class="blog-sidebard-content">
-        <h4>发文推进</h4>
-        <mat-progress-bar></mat-progress-bar>
-    </div>
-</mat-grid-tile>
+<!-- Card -->
+<mat-grid-list cols="3" rowHeight="100px">
+    ...
+</mat-grid-list>
 ```
 
-*src\app\dashboard\blog\blog.component.scss*
+*src\app\dashboard\blog\blog.component.ts*
+
+```typescript
+@Component({
+  selector: 'app-blog',
+  templateUrl: './blog.component.html',
+  styleUrls: ['./blog.component.scss']
+})
+export class BlogComponent implements OnInit {
+
+  constructor(..., public dialog: MatDialog) { }
+
+  showAddPostDialog() {
+    this.dialog.open(AddPostDialogComponent);
+  }
+}
+```
+
+由于这种方式是 动态产生组件的，我们需要在所属 Module 中的 `entryComponents` 中加入要产生的 component；
+
+*src\app\dashboard\dashboard.module.ts*
+
+```typescript
+@NgModule({
+  entryComponents: [AddPostDialogComponent],
+  ...
+})
+export class DashboardModule { }
+```
+
+看来步骤比较多，但其实只有两个重点：
+
+- 建立要当做 Dialog 的 component
+- 使用注入的 `MatDialog` 对象把它打开
+
+ ![showAddPostDialog](assets/showAddPostDialog.gif)
+
+> 在 Dialog 中这个灰底的部分称为 `backdrop`。
+
+### 使用 mat-dialog-xxx 丰富 Dialog 内容
+
+在 `MatDialogModule` 中，定义了几个重要的 directives，这些 directives 可以帮助我们丰富 dialog 里的内容，同时还能够减少一些不必要的代码，让我们简单介绍一下：
+
+- **mat-dialog-title**：dialog 标题，尽管因为  dialog 的内容高度太长而造成滚动，依然会固定在整个 dialog 的最上方。
+- **mat-dialog-content**：dialog 内容，当内容长度超过 dialog 可以容纳的高度时，就会变成可以滚动的模式。
+- **mat-dialog-actions**：用来放置行动按钮的区域，显示位置刚好与 `mat-dialog-title` 相反，会固定在页面的最下方，一般会在这里放置一些如：**确认**、**取消**的按钮。
+- **mat-dialog-close**：只允许在 button 上使用的 directive，这个 directive 会使得 button 变成一个可以关闭目前 dialog 的按钮。
+
+*src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.html*
+
+```html
+<h2 mat-dialog-title>新增文章</h2>
+
+<mat-dialog-content class="post-form">
+  <mat-form-field>
+    <input matInput placeholder="标题">
+  </mat-form-field>
+  <mat-form-field>
+    <textarea matInput placeholder="文章内容" rows="3"></textarea>
+  </mat-form-field>
+  <p *ngFor="let item of list; let i = index">条款{{ i | number: '2.0-0' }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button color="primary">发表</button>
+  <button mat-button color="warn" mat-dialog-close>取消</button>
+</mat-dialog-actions>
+
+```
+
+*src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.scss*
 
 ```scss
-.blog-sidebard-content {
-  align-self: flex-start;
-  padding-top: 100px;
-  width: 95%;
+.post-form mat-form-field {
+  width: 100%;
 }
 
 ```
 
- ![mat-progress-bar](assets/mat-progress-bar.png)
-
-要显示进度，只需要设置 `value` 属性即可，这里没有 `min`、`max` 等属性可以设置，默认值就是 0 ~ 100，低于或超过都不会影响呈现的变化：
-
-*src\app\dashboard\blog\blog.component.html*
-
-```html
-<div class="blog-sidebard-content">
-    <h4>发文推进</h4>
-    <mat-progress-bar value="85"></mat-progress-bar>
-</div>
-```
-
- ![mat-progress-bar-value](assets/mat-progress-bar-value.png)
-
-当数字在变化时，还能够看到动画效果：
-
-*src\app\dashboard\blog\blog.component.ts*
+*src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.ts*
 
 ```typescript
-export class BlogComponent implements OnInit {
-  progress = 85;
+![mat-dialog-xxx](C:/Users/Administrator/Desktop/mat-dialog-xxx.gif@Component({
+  selector: 'app-add-post-dialog',
+  templateUrl: './add-post-dialog.component.html',
+  styleUrls: ['./add-post-dialog.component.scss']
+})
+export class AddPostDialogComponent implements OnInit {
+
+  list = [];
+
+  constructor() {
+    for (let index = 0; index < 10; index++) {
+      this.list.push(index + 1);
+    }
+  }
 }
 ```
 
-*src\app\dashboard\blog\blog.component.html*
+ ![mat-dialog-xxx](assets/mat-dialog-xxx.gif)
 
-```html
-<div class="blog-sidebard-content">
-    <h4>发文推进</h4>
-    <mat-progress-bar [value]="progress"></mat-progress-bar>
-    <button mat-raised-button (click)="progress = progress - 10">-10</button>
-    <button mat-raised-button (click)="progress = progress + 10">+10</button>
-</div>
+一个标准的 dialog 就诞生了！除了依照 title、content 和 actions 切割空间之外，按下取消的按键就能够关闭 dialog，另外当高度超过可以自动延展的范围（Angular Material 中的 dialog 设置为 `65vh`）时，就会变成可以滚动的状态。
+
+dialog 的效果，可以看到以下几个亮点：
+
+- dialog 显示时，默认会 **focus 到第一个表单控制项**
+- 当使用 `tab / shift + tab` 切换 focus 状态时，**永远不会跳出 dialog 的范围，只会在 dialog 内移动**。
+- **不只按下取消按钮可以开关 dialog**，按下 `ESC` 键也可以。
+
+以上特色在介绍 Angular CDK 时，可以通过 Angular CDK 来帮助我们在自己设计的组件中达到一样的功能！
+
+### 关于 MatDialog Service
+
+在一开始介绍如何打开一个 dialog 时，我们注入了 `MatDialog` 这个 Service，下面我们来介绍一下这个 Service 的属性及方法。
+
+#### MatDialog 的属性
+
+MatDialog 有 3 个属性：
+
+- `afterAllClosed() Observable<void>`：会在所有页面上的 dialog 都被关闭时，才会触发的一个 Observable。
+
+  **没错！Dialog 是可以多开的！**只要使用 `MatDialog.open()` 方法即可
+
+- `afterOpen() Observable<MatDialogRef<any>>`：当一个 dialog 开启时，就会触发一次，并告知目前开启的 dialog。
+
+- `openDialogs() MatDialogRef<any>[]`：单纯的记录目前所有开启中的 dialog。
+
+简单实例：
+
+新建二级 dialog：
+
+```sh
+ng g c dashboard/blog/add-post-confirm-dialog
 ```
 
- ![mat-progress-bar-+=](assets/mat-progress-bar-+=.gif)
-
-### 调整 mat-progess-bar 的模式
-
-`<mat-progress-bar>` 有一个属性 `mode`，具有 4 种模式，分别代表不同的显示方式：
-
-- **determinate**：默认值，依照 `value` 属性决定进度。
-
-- **buffer**：除了原来的 `value` 以外还可以设置 `bufferValue` 属性，会在 `value` 和 `bufferValue` 之间多一块缓冲区，而空白的部分则会变成另一种效果的显示方式。
-
-  *src\app\dashboard\blog\blog.component.html*
-
-  ```html
-  <h4>Buffer Progress Bar</h4>
-  <mat-progress-bar mode="buffer" value="30" bufferValue="60"></mat-progress-bar>
-  ```
-
-   ![mat-progress-bar-buffer](assets/mat-progress-bar-buffer.gif)
-
-- **indeterminate**：代表不确定的进度，`value` 和 `bufferValue` 属性都不能使用，使用于进行等待的时候。
-
-  *src\app\dashboard\blog\blog.component.html*
-
-  ```html
-  <h4>Indeterminate Progress Bar</h4>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  ```
-
-   ![mat-progress-bar-indeterminate](assets/mat-progress-bar-indeterminate.gif)
-
-- **query**：和 indeterminate 一样，但进度的方向刚好相反，适合在 loading 之前的前置准备时使用，要进入 loading 时再调整成 `indeterminate `
-
-  *src\app\dashboard\blog\blog.component.html*
-
-  ```html
-  <h4>Query Progress Bar</h4>
-  <mat-progress-bar mode="query"></mat-progress-bar>
-  ```
-
-   ![mat-progress-bar-query](assets/mat-progress-bar-query.gif)
-
-### 调整 Progress bar 的颜色
-
-老规矩，只需要设置 `color` 为 `primary`、`accent` 和 `warn` 即可切换颜色。
+*src\app\dashboard\blog\add-post-confirm-dialog\add-post-confirm-dialog.component.html*
 
 ```html
-<h4>Primary</h4>
-<mat-progress-bar mode="buffer" color="primary"></mat-progress-bar>
+<h2 mat-dialog-title>
+  确认新增
+</h2>
 
-<h4>Accent</h4>
-<mat-progress-bar mode="buffer" color="accent"></mat-progress-bar>
+<mat-dialog-content>
+  确定要新增这篇文章？
+</mat-dialog-content>
 
-<h4>Warn</h4>
-<mat-progress-bar mode="buffer" color="warn"></mat-progress-bar>
+<mat-dialog-actions>
+  <button mat-button color="primary" (click)="confirm()">确认</button>
+  <button mat-button color="warn" mat-dialog-close>取消</button>
+</mat-dialog-actions>
+
 ```
 
- ![mat-progress-bar-color](assets/mat-progress-bar-color.gif)
+*src\app\dashboard\blog\add-post-confirm-dialog\add-post-confirm-dialog.component.ts*
 
-### 应用
+```typescript
+@Component({
+  selector: 'app-add-post-confirm-dialog',
+  templateUrl: './add-post-confirm-dialog.component.html',
+  styleUrls: ['./add-post-confirm-dialog.component.scss']
+})
+export class AddPostConfirmDialogComponent implements OnInit {
 
-由于是扁长型的显示方式，因此放在一些独立显示的组件，如 Card 下可以说是非常适合：
+  constructor(private dialog: MatDialog) { }
 
-*src\app\dashboard\blog\blog.component.html*
+  ngOnInit() {
+  }
 
-```html
-![mat-card-footer-progress-bar](C:/Users/Administrator/Documents/Honeycam/mat-card-footer-progress-bar.gif<mat-grid-tile *ngFor="let post of post$ | async; let index = index" rowspan="6">
-    <mat-card class="post-tile" [tabindex]="index">
-        ...
-        <mat-card-footer>
-            Angular Material 系列
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        </mat-card-footer>
-    </mat-card>
-</mat-grid-tile>
+  confirm() {
+    this.dialog.closeAll();
+  }
+}
 ```
 
- ![mat-card-footer-progress-bar](assets/mat-card-footer-progress-bar.gif)
-
-## 开始使用 Angular Material 的 Progress Spinner
-
-Progress Spinner 基本上概念跟 Progress Bar 大同小异，只是从直条显示变成圆形而已，加入 `MatProgressSpinnerModule` 后，直接使用 `<mat-progress-spinner>` 即可：
-
-*src\app\shared-material\shared-material.module.ts*
+*src\app\dashboard\dashboard.module.ts*
 
 ```typescript
 @NgModule({
-  exports: [
-    MatProgressSpinnerModule,
-    ...
-  ]
+  entryComponents: [..., AddPostConfirmDialogComponent],
+  ...
 })
-export class SharedMaterialModule {...}
+export class DashboardModule { }
 ```
 
-*src\app\dashboard\blog\blog.component.html*
+修改 一级 dialog来开启多个 dialog 的程序只需要调用注入的 `MatDialog` 的 `open()` 方法，就可以打开一个新的 dialog。
+
+*src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.html*
 
 ```html
-<h4>Progress Spinner</h4>
-<mat-progress-spinner [value]="progress"></mat-progress-spinner>
-<button mat-raised-button (click)="progress = progress - 10">-10</button>
-<button mat-raised-button (click)="progress = progress + 10">+10</button>
+<h2 mat-dialog-title>新增文章</h2>
+
+<mat-dialog-content class="post-form">
+  ...
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button color="primary" (click)="doPost()">发表</button>
+  <button mat-button color="warn" mat-dialog-close>取消</button>
+</mat-dialog-actions>
+
 ```
 
- ![mat-progress-spinner](assets/mat-progress-spinner.gif)
+*src\app\dashboard\blog\add-post-confirm-dialog\add-post-confirm-dialog.component.ts*
 
-### 设置 mat-progress-spinner 的模式
+```typescript
+@Component({
+  selector: 'app-add-post-dialog',
+  templateUrl: './add-post-dialog.component.html',
+  styleUrls: ['./add-post-dialog.component.scss']
+})
+export class AddPostDialogComponent implements OnInit {
 
-`<mat-progress-spinner>` 的 `mode` 只有两个：
+  constructor(private dialog: MatDialog) {...}
 
-- **determine**：默认值，会通过 `value` 决定进度显示。
+  doPost() {
+    this.dialog.open(AddPostConfirmDialogComponent);
+  }
+}
+```
 
-- **indeterminate**：代表进度不确定，会忽略 `value` 的设置。
+![mat-dialog-opendialogs](assets/mat-dialog-opendialogs.gif)
 
-  *src\app\dashboard\blog\blog.component.html*
+#### MatDialog 的方法
 
-  ```html
-  <h4>Indeterminate Progress Spinner</h4>
-  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-  ```
+MatDialog 有 3 个方法，可以让我们自由地控制 dialog：
 
-   ![mat-progress-spinner-indeterminate](assets/mat-progress-spinner-indeterminate.gif)
+- `closeAll`：顾名思义，就是关闭所有的 dialog
 
-### 设置 mat-progress-spinner 的线条粗细
+- `getDialogById`：每个 dialog 都有自己的 id，我们也可以自定义 id，无论哪种方式，只要有 id，就能在任何时候使用 `getDialogById(id)`，来取得某个 dialog，如果无法取得的话，会回传 `undefined`。
 
-`<mat-progress-spinner>` 还有一个 `strokeWith` 属性，我们可以通过这个属性来调整它的线条宽度
+- `open`：最重要的一个方法，包含 2 个参数
+
+  - `componentOrTemplateRef: ComponentType<T> | TemplateRef<T>`：必填，要显示的 dialog，可以是 component 或 templateRef。
+
+    ```html
+    <ng-template #dialogByTemplate>
+      ...
+    </ng-template>
+    ```
+
+    ```typescript
+    @ViewChildren('dialogByTemplate') dialogByTemplate;
+    open() {
+        this.dialog.open(this.dialogByTemplate);
+    }
+    ```
+
+    > 直接将 `<ng-template>` 当做 dialog 显示，会减少设计太多的 component 反而难以管理
+
+  - `config?: MatDialogConfig<D>`：非必填，用来设置一些显示数据。
+
+#### 自定义 MatDialogConfig
+
+我们可以通过 `MatDialogConfig` 设置一些 dialog 打开时的数据，由于属性众多，以下挑几个重要的来介绍：
+
+##### data
+
+**超重要**，我们不可能永远只单纯地打开一个 dialog，一定会有需要传入一些数据的时候，这时可以使用 data 参数来传入一些数据：
+
+*src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.html*
+
+```html
+<h2 mat-dialog-title>新增文章</h2>
+
+<mat-dialog-content class="post-form">
+  <mat-form-field>
+    <input matInput placeholder="标题" [(ngModel)]="title">
+  </mat-form-field>
+  ...
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  ...
+</mat-dialog-actions>
+
+```
+
+*src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.ts*
+
+```typescript
+@Component({
+  selector: 'app-add-post-dialog',
+  templateUrl: './add-post-dialog.component.html',
+  styleUrls: ['./add-post-dialog.component.scss']
+})
+export class AddPostDialogComponent implements OnInit {
+
+  title: string;
+
+  doPost() {
+    this.dialog.open(AddPostConfirmDialogComponent, {
+      data: { title: this.title }
+    });
+  }
+}
+```
+
+*src\app\dashboard\blog\add-post-confirm-dialog\add-post-confirm-dialog.component.html*
+
+```html
+<h2 mat-dialog-title>
+  确认新增
+</h2>
+
+<mat-dialog-content>
+  确定要新增这篇文章？<br>
+  （标题：{{ title }}）
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  ...
+</mat-dialog-actions>
+
+```
+
+*src\app\dashboard\blog\add-post-confirm-dialog\add-post-confirm-dialog.component.ts*
+
+```typescript
+@Component({
+  selector: 'app-add-post-confirm-dialog',
+  templateUrl: './add-post-confirm-dialog.component.html',
+  styleUrls: ['./add-post-confirm-dialog.component.scss']
+})
+export class AddPostConfirmDialogComponent implements OnInit {
+
+  get title() {
+    return this.data.title;
+  }
+
+  constructor(
+    ...,
+    @Inject(MAT_DIALOG_DATA) private data: any
+    ) { }
+}
+```
+
+ ![mat-dialog-opendialogs-data](assets/mat-dialog-opendialogs-data.gif)
+
+##### autoFocus
+
+当 dialog 打开时，是否要自动 focus 在第一个控制项
+
+##### id
+
+可以为每个 dialog 自定义一个唯一的 ID
+
+##### 高度与宽度
+
+我们可以使用 `height`、`width`、`minHeight`、`minWidth`、`maxHeight` 和 `maxWidth` 来设置 dialog 的尺寸大小，除了 `height` 和 `width` 一定要用字符串表示以外，其他属性可以给予数值，当给予数值而非字符串时，默认单位为 `px`。
+
+##### hasBackdrop
+
+是否要使用一个灰色的底来隔绝 dialog 与下面的页面，也就是 backdrop，如果设置为 `false`，则依然可以和 dialog 后面的组件互动。
 
 *src\app\dashboard\blog\blog.component.ts*
 
 ```typescript
+@Component({
+  selector: 'app-blog',
+  templateUrl: './blog.component.html',
+  styleUrls: ['./blog.component.scss']
+})
 export class BlogComponent implements OnInit {
-  strokeWidth = 1;
+
+  showAddPostDialog() {
+    this.dialog.open(AddPostDialogComponent, { hasBackdrop: false });
+  }
 }
 ```
 
+ ![mat-dialog-hasBackdrop](assets/mat-dialog-hasBackdrop.gif)
 
+##### position
 
-*src\app\dashboard\blog\blog.component.html*
+可以设置：
 
-```html
-<h4>Spinner Stroke Width</h4>
-<mat-progress-spinner value="60" [strokeWidth]="strokeWidth"></mat-progress-spinner>
-<button mat-raised-button (click)="strokeWidth = strokeWidth - 1">-1</button>
-{{ strokeWidth }}
-<button mat-raised-button (click)="strokeWidth = strokeWidth + 1">+1</button>
-```
+- `top`
+- `bottom`
+- `left`
+- `right`
 
- ![mat-progress-spinner-strokeWidth](assets/mat-progress-spinner-strokeWidth.gif)
+来决定 dialog 显示的位置。
 
-### 设置 mat-progress-spinner 的直径大小
+##### disableClose
 
-除了线条宽度以外，通过 `diameter` 属性，我们也能调整圆圈的直径大小：
+默认情况下我们可以使用 `ESC` 键关闭 dialog，通过设置 `disableClose`为 `true`，可以取消这个功能，但要注意可能影响使用者的使用习惯。
 
-*src\app\dashboard\blog\blog.component.html*
+#### 使用 MatDialogRef
 
-```html
-<h4>Spinner Stroke Width</h4>
-<mat-progress-spinner value="60" [diameter]="diameter"></mat-progress-spinner>
-<button mat-raised-button (click)="diameter = diameter - 10">-10</button>
-{{ diameter }}
-<button mat-raised-button (click)="diameter = diameter + 10">+10</button>
-```
+所有的 dialog 开始后，多会产生一个对应的 `MatDialogRef<T>`，其中的 `T` 代表实际产生的 component 或 templateRef，取得这个 DialogRef 的方式很多，主要有：
 
- ![mat-progress-spinner-diameter](assets/mat-progress-spinner-diameter.gif)
+1. 使用 `MatDialog` 的 `open()` 时，回传的值
 
-### 使用 mat-spinner
+   例如，以下程序实例，可以通过取得开启对 component 的 MatDialogRef，来处理原来组件的事件：
 
-因为 `indeterminate` 模式在 spinner 实在太常用了，因此还有一个 `<mat-spinner>` 可以使用。
+   *src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.ts*
 
-`<mat-spinner>` 可以想象成是 `<mat-progress-spinner mode="indeterminate">` 的缩写，因此不能额外设置 `mode` 和 `value`，不过 `strokeWidth` 和 `diameter` 依然也都可以设置：
+   ```typescript
+   @Component({
+     selector: 'app-add-post-dialog',
+     templateUrl: './add-post-dialog.component.html',
+     styleUrls: ['./add-post-dialog.component.scss']
+   })
+   export class AddPostDialogComponent implements OnInit {
+   
+     doPost() {
+       const confirmDialogRef = this.dialog.open(AddPostConfirmDialogComponent, {
+         data: { title: this.title }
+       });
+   
+       confirmDialogRef.componentInstance.doConfirm.subscribe(() => {
+         console.log(`Close Dialog Button Click`);
+       });
+     }
+   }
+   ```
 
-*src\app\dashboard\blog\blog.component.html*
+   *src\app\dashboard\blog\add-post-confirm-dialog\add-post-confirm-dialog.component.ts*
 
-```html
-<h4>Very Small Spinner</h4>
-<mat-spinner [diameter]="50" [strokeWidth]="5"></mat-spinner>
-```
+   ```typescript
+   @Component({
+     selector: 'app-add-post-confirm-dialog',
+     templateUrl: './add-post-confirm-dialog.component.html',
+     styleUrls: ['./add-post-confirm-dialog.component.scss']
+   })
+   export class AddPostConfirmDialogComponent implements OnInit {
+   
+     doConfirm = new EventEmitter<any>();
+   
+     confirm() {
+       this.dialog.closeAll();
+       this.doConfirm.emit();
+     }
+   }
+   ```
 
- ![mat-spinner](assets/mat-spinner.gif)
+   ![mat-dialog-MatDialogRef](assets/mat-dialog-MatDialogRef.gif)
 
-### 应用
+2. 使用 `MatDialog` 的 `getDialogById` 取得
 
-Progress Spinner 由于体积较大的关系，通常会放置在预期有内容，但目前还没有显示的地方， 等到内容产生后再将其隐藏，例如我们可以在部落格文章读取完之前，先放上一个 Progress Spinner：
+3. 在我们当做 dialog 的 component 中，注入取得
 
-*src\app\dashboard\blog\blog.component.html*
+   *src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.html*
 
-```html
-<!-- 置顶文章 loading -->
-<ng-template #loading>
-    <mat-grid-tile colspan="2">
-        <mat-spinner></mat-spinner>
-    </mat-grid-tile>
-</ng-template>
+   ```html
+   <h2 mat-dialog-title>新增文章</h2>
+   
+   <mat-dialog-content class="post-form">
+     ...
+   </mat-dialog-content>
+   
+   <mat-dialog-actions>
+     <button mat-button color="primary" (click)="doPost()">发表</button>
+     <button mat-button color="primary" (click)="move()">移动位置</button>
+     <button mat-button color="warn" mat-dialog-close>取消</button>
+   </mat-dialog-actions>
+   
+   ```
 
-<ng-container *ngIf="post$ | async as post; else loading">
-    <!-- 置顶文章 -->
-    <mat-grid-tile rowspan="2">
-        <mat-card class="post-tile">
-            <mat-card-title-group>
-                <mat-card-title>置顶文章 1</mat-card-title>
-                <mat-card-subtitle>2020/01/04</mat-card-subtitle>
-                <img mat-card-sm-image src="https://picsum.photos/300/300/?random">
-            </mat-card-title-group>
-            <mat-card-content>
-                文章内容 1...
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-button color="primary">继续阅读</button>
-            </mat-card-actions>
-        </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile rowspan="2">
-        <mat-card class="post-tile">
-            <mat-card-title-group>
-                <mat-card-title>置顶文章 2</mat-card-title>
-                <mat-card-subtitle>2020/02/04</mat-card-subtitle>
-                <img mat-card-sm-image src="https://picsum.photos/300/300/?random">
-            </mat-card-title-group>
-            <mat-card-content>
-                文章内容 2...
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-button color="primary">继续阅读</button>
-            </mat-card-actions>
-        </mat-card>
-    </mat-grid-tile>
+   *src\app\dashboard\blog\add-post-dialog\add-post-dialog.component.ts*
 
-    <!-- 清单文章 -->
-    <mat-grid-tile *ngFor="let post of post$ | async; let index = index" rowspan="6">
-        <mat-card class="post-tile" [tabindex]="index">
-            <mat-card-header>
-                <mat-card-title>{{ post.title.substring(0, 15) }}...</mat-card-title>
-                <mat-card-subtitle>User Id: {{ post.userId }}</mat-card-subtitle>
-                <img mat-card-avatar src="https://picsum.photos/300/300/?random">
-            </mat-card-header>
-            <img mat-card-image src="https://picsum.photos/300/300/?random">
-            <mat-card-content>{{ post.body.substring(0, 100) }}...</mat-card-content>
-            <mat-card-actions align="end">
-                <button mat-button color="primary">继续阅读</button>
-                <button mat-button color="accent">编辑</button>
-            </mat-card-actions>
-            <mat-card-footer>
-                Angular Material 系列
-                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-            </mat-card-footer>
-        </mat-card>
-    </mat-grid-tile>
-</ng-container>
-```
+   ```typescript
+   ![mat-dialog-MatDialogRef-injection](C:/Users/Administrator/Documents/Honeycam/mat-dialog-MatDialogRef-injection.gif@Component({
+     selector: 'app-add-post-dialog',
+     templateUrl: './add-post-dialog.component.html',
+     styleUrls: ['./add-post-dialog.component.scss']
+   })
+   export class AddPostDialogComponent implements OnInit {
+   
+     constructor(..., private dialogRef: MatDialogRef<AddPostDialogComponent>) {
+       ...
+     }
+   
+     move() {
+       this.dialogRef.updatePosition({ top: '0', left: '0' });
+     }
+   }
+   ```
 
- ![mat-spinner-before-load-content](assets/mat-spinner-before-load-content.gif)
+    ![mat-dialog-MatDialogRef-injection](assets/mat-dialog-MatDialogRef-injection.gif)
+
