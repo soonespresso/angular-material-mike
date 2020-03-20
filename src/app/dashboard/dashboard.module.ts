@@ -9,11 +9,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BlogComponent } from './blog/blog.component';
 import { AddPostDialogComponent } from './blog/add-post-dialog/add-post-dialog.component';
 import { AddPostConfirmDialogComponent } from './blog/add-post-confirm-dialog/add-post-confirm-dialog.component';
+import { AfterPostNotifyComponent } from './blog/after-post-notify/after-post-notify.component';
 
 
 @NgModule({
-  entryComponents: [AddPostDialogComponent, AddPostConfirmDialogComponent],
-  declarations: [DashboardComponent, SurveyComponent, BlogComponent, AddPostDialogComponent, AddPostConfirmDialogComponent],
+  entryComponents: [AddPostDialogComponent, AddPostConfirmDialogComponent, AfterPostNotifyComponent],
+  declarations: [
+    DashboardComponent, SurveyComponent, BlogComponent, AddPostDialogComponent, AddPostConfirmDialogComponent, AfterPostNotifyComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,

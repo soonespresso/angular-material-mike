@@ -1,13 +1,56 @@
 <h2 mat-dialog-title>新增文章</h2>
 
 <mat-dialog-content class="post-form">
+  <button mat-button (click)="titleTooltip.show()">打开提示</button>
+  <button mat-button (click)="titleTooltip.hide()">关闭提示</button>
   <mat-form-field>
-    <input matInput placeholder="标题" [(ngModel)]="title">
+    <input matInput placeholder="标题" [(ngModel)]="title"
+            #titleTooltip="matTooltip"
+            matTooltip="请输入一个标题~"
+            matTooltipPosition="above"
+            matTooltipShowDelay="2000"
+            matTooltipHideDelay="3000">
   </mat-form-field>
   <mat-form-field>
     <textarea matInput placeholder="文章内容" rows="3"></textarea>
   </mat-form-field>
+
+  <h4>文章标签</h4>
+  <mat-form-field>
+    <mat-chip-list>
+      <mat-chip color="primary" selected="true">JavaScript</mat-chip>
+      <mat-chip color="accent" selected="true">Material Design</mat-chip>
+      <mat-chip color="warn" selected="true">Angular Material</mat-chip>
+      <mat-basic-chip>HTML</mat-basic-chip>
+    </mat-chip-list>
+  </mat-form-field>
+
+  <h4>内容标签</h4>
+  <mat-form-field>
+    <mat-chip-list>
+      <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)" removable="false">
+        {{ tag }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-list>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-chip-list #chipList>
+      <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+        {{ tag }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-list>
+    <input placeholder="主题标签"
+            [matChipInputFor]="chipList"
+            [matChipInputAddOnBlur]="true"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="addTag($event)">
+  </mat-form-field>
+
   <p *ngFor="let item of list; let i = index">条款{{ item | number: '2.0-0' }}</p>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>
